@@ -1,4 +1,4 @@
-package BackendAPI.QuoteServer;
+package Model.QuoteServer;
 
 ///: NoSuchTickerException.java
 

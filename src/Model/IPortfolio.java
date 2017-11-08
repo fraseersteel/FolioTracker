@@ -1,4 +1,4 @@
-package BackendAPI;
+package Model;
 
 public interface IPortfolio {
 

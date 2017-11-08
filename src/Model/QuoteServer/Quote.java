@@ -1,4 +1,4 @@
-package BackendAPI.QuoteServer;
+package Model.QuoteServer;
 
 /**
  * This class Quote.java retrieves a file from the yahoo webpage, and reads
