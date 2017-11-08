@@ -1,7 +1,8 @@
-package Main;
+package main;
 
-import View.*;
-import Model.Model;
+import controller.Controller;
+import view.*;
+import model.Model;
 
 public class Driver {
 

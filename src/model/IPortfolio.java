@@ -1,6 +1,6 @@
-package Model;
+package model;
 
-public interface IPortfolio {
+public interface IPortfolio extends Model{
 
 
 

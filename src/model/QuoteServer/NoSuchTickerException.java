@@ -1,22 +1,20 @@
-package Model.QuoteServer;
+package model.QuoteServer;
 
-///: WebsiteDataException.java
+///: NoSuchTickerException.java
 
-public class WebsiteDataException extends Exception {
+public class NoSuchTickerException extends Exception{
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    /////////////// Constructor ///////////////
-
     /**
      * Default constructor
      *
      * @param s the exception to be thrown.
      */
-    public WebsiteDataException( String s ) {
+    public NoSuchTickerException( String s ) {
 
         super(s);
 

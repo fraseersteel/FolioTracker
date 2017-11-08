@@ -1,12 +1,16 @@
-package View;
+package view;
 
+import model.Model;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 
 public class FolioFrame extends JFrame implements View {
+
+    private Model model;
 
     private JPanel contentpane;
     private Map<String, StockTable> profiles = new HashMap<String, StockTable>();
@@ -64,5 +68,8 @@ public class FolioFrame extends JFrame implements View {
     }
 
 
-
+    @Override
+    public void update(Observable o, Object arg) {
+        // updates to the folios?
+    }
 }

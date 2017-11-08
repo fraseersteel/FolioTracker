@@ -1,6 +1,6 @@
-package Model;
+package model;
 
-public interface IStock {
+public interface IStock extends Model {
 
 
     public String getTicketSymbol();

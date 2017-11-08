@@ -1,12 +1,13 @@
-package View;
+package view;
 
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import java.util.Observable;
 
-public class StockTable extends JPanel {
+public class StockTable extends JPanel implements View {
 
     private CustomScrollPane scrollPane = new CustomScrollPane("Stocks");
     private JTable table;
@@ -95,5 +96,10 @@ public class StockTable extends JPanel {
 
         }
         sumLbl.setText("Total Value: " + sum);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        //updates to the stock?
     }
 }

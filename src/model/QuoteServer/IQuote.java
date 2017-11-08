@@ -1,5 +1,5 @@
 
-package Model.QuoteServer;
+package model.QuoteServer;
 
 import java.io.IOException;
 

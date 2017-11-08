@@ -1,4 +1,4 @@
-package Model.QuoteServer;
+package model.QuoteServer;
 
 ///:MethodException.java
 
