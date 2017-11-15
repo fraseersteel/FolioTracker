@@ -1,6 +1,6 @@
 package view;
 
-import net.miginfocom.swing.MigLayout;
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -15,7 +15,7 @@ public class StockTable extends JPanel implements Observer {
     private JLabel sumLbl;
 
     public StockTable() {
-        setLayout(new MigLayout("" , "[grow, fill]" ,"[][grow, fill]"));
+       // setLayout(new MigLayout("" , "[grow, fill]" ,"[][grow, fill]"));
         String[] columnNames = {"Ticker Symbol",
                 "Stock Name",
                 "Number of Shares",
