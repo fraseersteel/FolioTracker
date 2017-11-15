@@ -12,4 +12,6 @@ public interface IPortfolio {
 
     boolean removeStock(String tickerSymbol);
 
+    Double getTotalValue();
+
 }

@@ -55,10 +55,5 @@ public class Stock implements IStock {
         this.valueOfHolding = valueOfHolding;
     }
 
-    @Override
-    public void deleteStock(Stock stock) {
-    stock = null;
-    }
-
 
 }
