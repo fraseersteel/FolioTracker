@@ -27,12 +27,20 @@ public class Portfolio extends Observable implements IPortfolio {
         Stock stock4 = new Stock("4","stockname4",24000,0.01,24);
         stockMap.put(stock4.getTicketSymbol(),stock4);
 
-        Stock stock5 = new Stock("1","stockname5",300,0.2,60);
+        Stock stock5 = new Stock("5","stockname5",300,0.2,60);
         stockMap.put(stock5.getTicketSymbol(),stock5);
 
 
-    }//mock objects for portfolio
+    }
 
+    @Override
+    public Double getTotalValue(){
+        Double total = 0.0;
+        for(Stock stock : stockMap.values()){
+            total += stock.getValueOfHolding();
+        }
+        return total;
+    }
 
     @Override
     public String getPortfolioName() {

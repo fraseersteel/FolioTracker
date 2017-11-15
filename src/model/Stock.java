@@ -1,5 +1,7 @@
 package model;
 
+import model.QuoteServer.StrathQuoteServer;
+
 public class Stock implements IStock {
 
     private String ticketSymbol;
@@ -55,5 +57,10 @@ public class Stock implements IStock {
         this.valueOfHolding = valueOfHolding;
     }
 
+    public void refresh(){
+            try {
+                String str = StrathQuoteServer.getLastValue(ticketSymbol);
+            } catch (Exception e) {}
+    }
 
 }
