@@ -13,11 +13,9 @@ public class Prices {
 
     //make static
     //loads prices
-
-
     /*
-
      */
+
     public Double getPriceOfTicker(String ticker){
         return mostRecentPrices.get(ticker);
     }

@@ -80,4 +80,10 @@ public class PortfolioTracker implements IPortfolioTracker {
             return;
         }
     }
+
+    @Override
+    public void deletePortfolio(Portfolio portfolio) {
+        getPortFoilioList().clear();
+    }
+
 }

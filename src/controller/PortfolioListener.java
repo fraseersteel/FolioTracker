@@ -24,10 +24,10 @@ public class PortfolioListener implements ActionListener {
             case "buy":
                 //            folioModel.buyStock(selectedTickerName, numOfShares);
                 break;
-            case "sell":
-                //            folioModel.sellStock(selectedTickerName, numOfShares);
+            case "save":
+
                 break;
-            case "change name":
+            case "delete":
                 break;
         }
     }

@@ -23,7 +23,7 @@ public class Stock implements IStock {
     }
 
     public String getStockName() {
-        return stockName;
+        return this.stockName;
     }
 
     public int getNumShares() {
@@ -53,6 +53,11 @@ public class Stock implements IStock {
 
     public void setValueOfHolding(int valueOfHolding){
         this.valueOfHolding = valueOfHolding;
+    }
+
+    @Override
+    public void deleteStock(Stock stock) {
+    stock = null;
     }
 
 

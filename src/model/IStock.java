@@ -23,4 +23,5 @@ public interface IStock {
 
     void setValueOfHolding(int valueOfHolding);
 
+    void deleteStock(Stock stock);
 }

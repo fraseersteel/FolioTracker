@@ -12,4 +12,6 @@ public interface IPortfolioTracker {
 
     void loadPortfolioFromFile();
 
+    void deletePortfolio(Portfolio portfolio);
+
 }

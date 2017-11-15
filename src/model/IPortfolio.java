@@ -6,7 +6,9 @@ public interface IPortfolio {
 
     void setPortfolioName(String name);
 
-    void createStock(String tickerSymbol, int numOfShares);
+    boolean createStock(String tickerSymbol, int numOfShares);
+
+    boolean buyStock(String ticketSymbol, int numOfShares);
 
     boolean removeStock(String tickerSymbol);
 
