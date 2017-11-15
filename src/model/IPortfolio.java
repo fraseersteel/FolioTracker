@@ -1,10 +1,13 @@
 package model;
 
-public interface IPortfolio extends Model{
+public interface IPortfolio {
 
+    String getPortfolioName();
 
+    void setPortfolioName(String name);
 
-    public void createStock(String tickerSymbol, int numOfShares);
+    void createStock(String tickerSymbol, int numOfShares);
 
+    boolean removeStock(String tickerSymbol);
 
 }

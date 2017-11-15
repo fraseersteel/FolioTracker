@@ -38,6 +38,11 @@ public class Stock implements IStock {
         return valueOfHolding;
     }
 
+    @Override
+    public void setStockName(String stockName) {
+        this.stockName = stockName;
+    }
+
     public void setNumShares(int numShares){
         this.numShares = numShares;
     }

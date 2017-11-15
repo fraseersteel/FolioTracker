@@ -1,22 +1,26 @@
 package model;
 
-public interface IStock extends Model {
+public interface IStock {
+
+    // getters
+    String getTicketSymbol();
+
+    String getStockName();
+
+    int getNumShares();
+
+    double getPricePerShare();
+
+    double getValueOfHolding();
 
 
-    public String getTicketSymbol();
+    //setters
+    void setStockName(String stockName);
 
-    public String getStockName();
+    void setNumShares(int numShares);
 
-    public int getNumShares();
+    void setPricePerShare(int pricePerShare);
 
-    public double getPricePerShare();
-
-    public double getValueOfHolding();
-
-    public void setNumShares(int numShares);
-
-    public void setPricePerShare(int pricePerShare);
-
-    public void setValueOfHolding(int valueOfHolding);
+    void setValueOfHolding(int valueOfHolding);
 
 }

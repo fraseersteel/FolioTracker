@@ -1,17 +1,16 @@
 package main;
 
-import controller.Controller;
 import view.*;
-import model.Model;
+import model.IPortfolioTracker;
 
 public class Driver {
 
-    private View view;
-    private Model model;
-    private Controller controller;
+//    private View view;
+    private IPortfolioTracker model;
+//    private Controller controller;
 
     public Driver() {
-        this.view = new FolioFrame();
+//        this.view = new FolioFrame();
 //        this.model = model;
 //        this.controller = controller;
     }

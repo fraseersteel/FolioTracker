@@ -1,23 +1,20 @@
 package controller;
 
-import model.Model;
-import view.View;
+import model.IStock;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class StockListener implements Controller {
+public class StockListener implements ActionListener {
 
-    private Model model;
+    private IStock model;
 
-    private View view;
-
-    public StockListener(Model model, View view) {
+    public StockListener(IStock model) {
         this.model = model;
-        this.view = view;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //
+
     }
 }

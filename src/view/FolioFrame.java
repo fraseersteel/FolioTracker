@@ -1,16 +1,18 @@
 package view;
 
-import model.Model;
-import net.miginfocom.swing.MigLayout;
+import model.IPortfolioTracker;
+//import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Observer;
 
-public class FolioFrame extends JFrame implements View {
+public class FolioFrame extends JFrame implements Observer {
 
-    private Model model;
+
+    private IPortfolioTracker model;
 
     private JPanel contentpane;
     private Map<String, StockTable> profiles = new HashMap<String, StockTable>();
@@ -19,36 +21,28 @@ public class FolioFrame extends JFrame implements View {
     public FolioFrame(){
         setTitle("FolioTracker");
         contentpane = new JPanel();
-        contentpane.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
+        contentpane.setLayout(new BoxLayout(contentpane, BoxLayout.PAGE_AXIS));
+//        contentpane.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
 
         initMenuBar();
         initComponents();
         setUpFrame();
-        insertProfile("Test1");
-        insertProfile("Test2");
+        insertProfile("Test1", new StockTable());
+        StockTable table = new StockTable();
+        table.insertValues("hi","there", 30, 1.0);
+        insertProfile("Test2", table);
     }
 
     private void setUpFrame(){
-        try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(500, 200, 825, 400);
         setVisible(true);
         this.setContentPane(contentpane);
     }
 
-    private void insertProfile(String name){
+    private void insertProfile(String name, StockTable table){
         profiles.put(name, new StockTable());
-        tabbedPane.addTab(name, null, new StockTable(),
+        tabbedPane.addTab(name, null, table,
                 "Does nothing");
     }
 

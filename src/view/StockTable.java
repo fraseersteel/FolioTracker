@@ -6,8 +6,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.util.Observable;
+import java.util.Observer;
 
-public class StockTable extends JPanel implements View {
+public class StockTable extends JPanel implements Observer {
 
     private CustomScrollPane scrollPane = new CustomScrollPane("Stocks");
     private JTable table;
@@ -75,10 +76,10 @@ public class StockTable extends JPanel implements View {
         insertValues("BT", "British Tele", 10, 1.5);
         insertValues("M&S", "Marks", 100, 1.0);
 
-        repaint();
+//        repaint();
     }
 
-    private void insertValues(String ticker, String name, Integer shares, Double price){
+    public void insertValues(String ticker, String name, Integer shares, Double price){
         Object[] values = {ticker, name, shares, price, (price*shares)};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
 
