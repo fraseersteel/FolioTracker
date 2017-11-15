@@ -10,6 +10,6 @@ public interface IPortfolioTracker {
 
     void savePortfolios();
 
-    void loadPortfolioByName(String name);
+    void loadPortfolioFromFile();
 
 }
