@@ -8,7 +8,7 @@ import javax.swing.table.TableRowSorter;
 import java.util.Observable;
 import java.util.Observer;
 
-public class StockTable extends JPanel implements Observer {
+public class StockTable extends JPanel implements Observer, IStockTable {
 
     private CustomScrollPane scrollPane = new CustomScrollPane("Stocks");
     private JTable table;
