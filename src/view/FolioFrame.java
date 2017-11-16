@@ -31,6 +31,8 @@ public class FolioFrame extends JFrame implements Observer {
         setupComponents();
 
 
+
+
 //        contentpane.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
 
 
@@ -115,6 +117,9 @@ public class FolioFrame extends JFrame implements Observer {
             index++;
         }
     }
+
+
+
 
     @Override
     public void update(Observable o, Object arg) {

@@ -1,5 +1,5 @@
 
-
+//todo this class could store a reference to the portfolio it is based off.
 package view;
 
 
@@ -30,10 +30,13 @@ public class StockTable extends JPanel implements Observer {
         setupTable();
 
         //testing code
-        insert();
-        insertValues("Sky", "Sky", 200, 3.0);
-        editNumberStocks("Sky", 10000);
-        editStockPrice("Sky", 50);
+//        insert();
+//        insertValues("Sky", "Sky", 200, 3.0);
+//        editNumberStocks("Sky", 10000);
+//        editStockPrice("Sky", 50);
+//        confirmBuy("Sky", 50);
+//        confirmBuy("Safadfay", 50);
+//        confirmSell("Sky", 20);
     }
 
     private void setupNorthMenu() {
@@ -47,10 +50,13 @@ public class StockTable extends JPanel implements Observer {
         JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         buyStocks = new JButton("Buy Stocks");
+        buyStocks.setToolTipText("Buy shares for unowned stocks, or purchase additional shares of highlighted stock");
         buttonsPane.add(buyStocks);
 
         sellStocks = new JButton("Sell Stocks");
+        sellStocks.setToolTipText("Sell shares of the currently owned stock.");
         buttonsPane.add(sellStocks);
+
         bottomMenuPane.add(buttonsPane, BorderLayout.LINE_START);
 
         add(bottomMenuPane, BorderLayout.PAGE_END);
@@ -104,27 +110,44 @@ public class StockTable extends JPanel implements Observer {
         scrollPane.setViewportView(table);
     }
 
-    public void clearTable() {
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0);
-        repaint();
+
+    public void buyStocks(){
+        //option to enter ticker, name, and number
+        //option to purchase additional for highlighted (and message sayting what highlighted is) and number
     }
 
-    public void filterTable(String string) {
-        if (table != null) {
-            TableRowSorter<DefaultTableModel> rowFilter = new TableRowSorter<>((DefaultTableModel) table.getModel());
-            table.setRowSorter(rowFilter);
-            rowFilter.setRowFilter(RowFilter.regexFilter("(?i)" + string));
+    public void sellStocks(){
+        //number of stocks and message on what highlighted is
+    }
+
+//todo the checks for stock, current stock count before selling etc. outside of this and before in controller
+    public void confirmBuy(String ticker, int numberOfShares) {
+        int tickerIndex = 0;
+
+        boolean stockOwned = false;
+        DefaultTableModel t = (DefaultTableModel) table.getModel();
+        for (int i = 0; i < t.getRowCount(); i++) {
+            if (t.getValueAt(i, tickerIndex).toString().equals(ticker)) {
+
+                JOptionPane.showMessageDialog(this, "Stock already owned for: " + ticker +
+                        ".\nPurchase an additional: " + numberOfShares + " shares?");
+                stockOwned = true;
+            }
         }
-     //   repaint();
+
+        if (!stockOwned) {
+            JOptionPane.showMessageDialog(this, "Purchase stock for: " + ticker +
+                    ".\nPurchase: " + numberOfShares + " shares?");
+        }
+
     }
 
-    private void insert() {
-        insertValues("BT", "British Tele", 10, 1.5);
-        insertValues("M&S", "Marks", 100, 1.0);
 
-//        repaint();
+    public void confirmSell(String ticker, int numberOfShares) {
+            JOptionPane.showMessageDialog(this, "Confirm sale of stocks: " + ticker + "\nNumber of stocks: " + numberOfShares);
+
     }
+
 
     public void insertValues(String ticker, String name, Integer shares, Double price) {
         Object[] values = {ticker, name, shares, price, (price * shares)};
@@ -202,6 +225,36 @@ public class StockTable extends JPanel implements Observer {
         }
         totalValueLabel.setText("Total Value: " + sum);
     }
+
+
+    //testing/unused methods
+
+
+    public void clearTable() {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+        repaint();
+    }
+
+    public void filterTable(String string) {
+        if (table != null) {
+            TableRowSorter<DefaultTableModel> rowFilter = new TableRowSorter<>((DefaultTableModel) table.getModel());
+            table.setRowSorter(rowFilter);
+            rowFilter.setRowFilter(RowFilter.regexFilter("(?i)" + string));
+        }
+        //   repaint();
+    }
+
+    private void insert() {
+        insertValues("BT", "British Tele", 10, 1.5);
+        insertValues("M&S", "Marks", 100, 1.0);
+
+//        repaint();
+    }
+
+
+
+
 
     @Override
     public void update(Observable o, Object arg) {
