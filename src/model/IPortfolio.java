@@ -1,10 +1,14 @@
 package model;
 
+import java.util.Set;
+
 public interface IPortfolio {
 
     String getPortfolioName();
 
-    void setPortfolioName(String name);
+    Set<String> getStockTickers();
+
+    IStock getStockByTicker(String ticker);
 
     void createStock(String tickerSymbol, int numOfShares);
 

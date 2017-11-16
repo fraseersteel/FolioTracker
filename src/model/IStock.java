@@ -9,9 +9,9 @@ public interface IStock {
 
     int getNumShares();
 
-    double getPricePerShare();
+    Double getPricePerShare();
 
-    double getValueOfHolding();
+    Double getValueOfHolding();
 
 
     //setters
@@ -19,8 +19,8 @@ public interface IStock {
 
     void setNumShares(int numShares);
 
-    void setPricePerShare(int pricePerShare);
-
-    void setValueOfHolding(int valueOfHolding);
+//    void setPricePerShare(int pricePerShare);
+//
+//    void setValueOfHolding(int valueOfHolding);
 
 }

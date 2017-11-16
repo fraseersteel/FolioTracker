@@ -1,6 +1,7 @@
 package view;
 
 import model.IPortfolioTracker;
+import model.Prices;
 //import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -9,17 +10,18 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-public class FolioFrame extends JFrame implements Observer {
+public class FolioFrame extends JFrame implements Observer, IFolioFrame {
 
 
-    private IPortfolioTracker model;
+    private IPortfolioTracker portfolioTracker;
 
     private JPanel contentpane;
     private Map<String, StockTable> profiles = new HashMap<String, StockTable>();
     private JTabbedPane tabbedPane = new JTabbedPane();
 
-    public FolioFrame(){
+    public FolioFrame(IPortfolioTracker portfolioTracker){
         setTitle("FolioTracker");
+        this.portfolioTracker = portfolioTracker;
         contentpane = new JPanel();
         contentpane.setLayout(new BoxLayout(contentpane, BoxLayout.PAGE_AXIS));
 //        contentpane.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
@@ -27,10 +29,9 @@ public class FolioFrame extends JFrame implements Observer {
         initMenuBar();
         initComponents();
         setUpFrame();
-        insertProfile("Test1", new StockTable());
-        StockTable table = new StockTable();
-        table.insertValues("hi","there", 30, 1.0);
-        insertProfile("Test2", table);
+        for(String name : portfolioTracker.getPortfolioNames()){
+            insertProfile(name);
+        }
     }
 
     private void setUpFrame(){
@@ -40,8 +41,10 @@ public class FolioFrame extends JFrame implements Observer {
         this.setContentPane(contentpane);
     }
 
-    private void insertProfile(String name, StockTable table){
-        profiles.put(name, new StockTable());
+    private void insertProfile(String name){
+        StockTable table = new StockTable(portfolioTracker.getPortfolioByName(name));
+        portfolioTracker.addObserverToPrices(table);
+        profiles.put(name, table);
         tabbedPane.addTab(name, null, table,
                 "Does nothing");
     }

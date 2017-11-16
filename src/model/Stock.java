@@ -2,22 +2,25 @@ package model;
 
 import model.QuoteServer.StrathQuoteServer;
 
-public class Stock implements IStock {
+import java.util.Observable;
+import java.util.Observer;
+
+public class Stock extends Observable implements IStock {
 
     private String ticketSymbol;
     private String stockName;
     private int numShares;
-    private double pricePerShare;
-    private double valueOfHolding;
+//    private double pricePerShare;
+//    private double valueOfHolding;
 
 
 
-    public Stock(String ticketSymbol,String stockName, int numShares, double pricePerShare, double valueOfHolding){
+    public Stock(String ticketSymbol,String stockName, int numShares){
         this.ticketSymbol = ticketSymbol;
         this.stockName = stockName;
         this.numShares = numShares;
-        this.pricePerShare = pricePerShare;
-        this.valueOfHolding = valueOfHolding;
+//        this.pricePerShare = pricePerShare;
+//        this.valueOfHolding = valueOfHolding;
     }
 
     public String getTicketSymbol() {
@@ -32,12 +35,12 @@ public class Stock implements IStock {
         return numShares;
     }
 
-    public double getPricePerShare() {
-        return pricePerShare;
+    public Double getPricePerShare() {
+        return Prices.getPriceOfTicker(ticketSymbol);
     }
 
-    public double getValueOfHolding() {
-        return valueOfHolding;
+    public Double getValueOfHolding() {
+        return Prices.getPriceOfTicker(ticketSymbol)*numShares;
     }
 
     @Override
@@ -49,18 +52,12 @@ public class Stock implements IStock {
         this.numShares = numShares;
     }
 
-    public void setPricePerShare(int pricePerShare){
-        this.pricePerShare = pricePerShare;
-    }
+//    public void setPricePerShare(int pricePerShare){
+//        this.pricePerShare = pricePerShare;
+//    }
 
-    public void setValueOfHolding(int valueOfHolding){
-        this.valueOfHolding = valueOfHolding;
-    }
-
-    public void refresh(){
-            try {
-                String str = StrathQuoteServer.getLastValue(ticketSymbol);
-            } catch (Exception e) {}
-    }
+//    public void setValueOfHolding(int valueOfHolding){
+//        this.valueOfHolding = valueOfHolding;
+//    }
 
 }
