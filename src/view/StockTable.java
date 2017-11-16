@@ -436,7 +436,7 @@ public class StockTable extends JPanel implements Observer {
                 correspondingName = t.getValueAt(i, nameIndex).toString();
             }
         }
-        
+
         return correspondingName;
     }
 
