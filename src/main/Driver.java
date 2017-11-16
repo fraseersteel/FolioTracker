@@ -16,22 +16,42 @@ public class Driver {
     public Driver() {
         this.view = new FolioFrame();
 
-        ArrayList<IPortfolio> folio = new ArrayList<>();
-        folio.add(new Portfolio("A"));
-        folio.add(new Portfolio("b"));
-        folio.add(new Portfolio("c"));
-        view.setTabbedPane(folio);
+        view.insertProfile("A", new StockTable());
+        view.insertProfile("B", new StockTable());
+        view.insertProfile("C", new StockTable());
 
-//        try {
+        view.addStockToFolio("A", "Tk1", "stock1", 50, 1.5);
+        view.addStockToFolio("B", "Tk2", "stock2", 40, 6.1);
+        view.addStockToFolio("C", "Tk3", "stock3", 30, 0.6);
+        view.addStockToFolio("C", "Tk4", "stock4", 20, 0.2);
+
+
+        try {
+            Thread.currentThread().sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        view.insertProfile("D", new StockTable());
+
+        StockTable table = view.getFolioStockTable("A");
+        table.insertValues("z1", "zzzzz", 10, 40.0);
+
+
+        table.buyStocks("aasd", "alp stocks", 1);
+        table.confirmBuy("a", 1);
+
+
+        table.sellStocks();
+
+
+        //        try {
 //            Thread.currentThread().sleep(5000);
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
 //        folio.add(new Portfolio("d"));
 //        view.setTabbedPane(folio);
-
-
-
 
 
 //        this.model = model;
