@@ -4,9 +4,9 @@ package view;
 
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
+import javax.swing.table.*;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -67,8 +67,8 @@ public class StockTable extends JPanel implements Observer {
         String[] columnNames = {"Ticker Symbol",
                 "Stock Name",
                 "No. of Shares",
-                "Price per Share",
-                "Value of Holding"};
+                "Price per Share (£)",
+                "Value of Holding (£)"};
 
         table = new JTable();
         table.setModel(new DefaultTableModel(new Object[][]{}, columnNames) {
@@ -90,9 +90,47 @@ public class StockTable extends JPanel implements Observer {
             }
         });
 
+        table.getColumnModel().getColumn(3).setCellRenderer(
+                new DefaultTableCellRenderer() {
+
+                    @Override
+                    public Component getTableCellRendererComponent(
+                            JTable table, Object value, boolean isSelected,
+                            boolean hasFocus, int row, int column) {
+
+                        setHorizontalAlignment(RIGHT);
+                        value = new DecimalFormat("#.00").format((double) value);
+                        return super.getTableCellRendererComponent(
+                                table, value, isSelected, hasFocus, row, column);
+
+                    }
+                }
+
+
+        );
+
+        table.getColumnModel().getColumn(4).setCellRenderer(
+                new DefaultTableCellRenderer() {
+
+                    @Override
+                    public Component getTableCellRendererComponent(
+                            JTable table, Object value, boolean isSelected,
+                            boolean hasFocus, int row, int column) {
+
+                        setHorizontalAlignment(RIGHT);
+                        value = new DecimalFormat("#.00").format((double) value);
+                        return super.getTableCellRendererComponent(
+                                table, value, isSelected, hasFocus, row, column);
+
+                    }
+                }
+
+
+        );
+
         table.getColumnModel().getColumn(0).setPreferredWidth(90);
         table.getColumnModel().getColumn(1).setPreferredWidth(100);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
+        table.getColumnModel().getColumn(2).setPreferredWidth(50);
         table.getColumnModel().getColumn(3).setPreferredWidth(50);
         table.getColumnModel().getColumn(4).setPreferredWidth(50);
 
@@ -108,44 +146,6 @@ public class StockTable extends JPanel implements Observer {
         tablePanel.add(table);
 
         scrollPane.setViewportView(table);
-    }
-
-
-    public void buyStocks(){
-        //option to enter ticker, name, and number
-        //option to purchase additional for highlighted (and message sayting what highlighted is) and number
-    }
-
-    public void sellStocks(){
-        //number of stocks and message on what highlighted is
-    }
-
-//todo the checks for stock, current stock count before selling etc. outside of this and before in controller
-    public void confirmBuy(String ticker, int numberOfShares) {
-        int tickerIndex = 0;
-
-        boolean stockOwned = false;
-        DefaultTableModel t = (DefaultTableModel) table.getModel();
-        for (int i = 0; i < t.getRowCount(); i++) {
-            if (t.getValueAt(i, tickerIndex).toString().equals(ticker)) {
-
-                JOptionPane.showMessageDialog(this, "Stock already owned for: " + ticker +
-                        ".\nPurchase an additional: " + numberOfShares + " shares?");
-                stockOwned = true;
-            }
-        }
-
-        if (!stockOwned) {
-            JOptionPane.showMessageDialog(this, "Purchase stock for: " + ticker +
-                    ".\nPurchase: " + numberOfShares + " shares?");
-        }
-
-    }
-
-
-    public void confirmSell(String ticker, int numberOfShares) {
-            JOptionPane.showMessageDialog(this, "Confirm sale of stocks: " + ticker + "\nNumber of stocks: " + numberOfShares);
-
     }
 
 
@@ -212,7 +212,6 @@ public class StockTable extends JPanel implements Observer {
         calcSum();
 
 
-
     }
 
     private void calcSum() {
@@ -223,7 +222,7 @@ public class StockTable extends JPanel implements Observer {
         for (int i = 0; i < t.getRowCount(); i++) {
             sum = sum + Double.parseDouble(t.getValueAt(i, vohIndex).toString());
         }
-        totalValueLabel.setText("Total Value: " + sum);
+        totalValueLabel.setText("Total Value: " + new DecimalFormat("£0.00").format(sum));
     }
 
 
@@ -253,8 +252,239 @@ public class StockTable extends JPanel implements Observer {
     }
 
 
+    //popup windows
+    public void buyStocks(String ticker, String name, int numberOfShares) {
+        //option to enter ticker, name, and number
+        //option to purchase additional for highlighted (and message sayting what highlighted is) and number
+
+        /** Sets the text displayed at the bottom of the frame. */
+        JLabel label = new JLabel();
 
 
+        Object[] options = {"Buy Shares", "Cancel"};
+        int n = JOptionPane.showOptionDialog(this,
+                "Purchase shares for highlighted stock:\n" +
+                        "Ticker: \t " + ticker + "\n" +
+                        "Name:" + "\n" +
+                        "there should be a hidable menu here",
+                "Purchase shares.",
+
+
+                //text field number of shares
+                //expandable section for ticker and name
+
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+        if (n == JOptionPane.YES_OPTION) {
+            //label.setText("al");
+        } else if (n == JOptionPane.NO_OPTION) {
+            //label.setText("ba");
+        } else {
+            //label.setText("Come on -- 'fess up!");
+        }
+
+
+    }
+
+    public void confirmBuy(String ticker, int numberOfShares) {
+        int tickerIndex = 0;
+
+        boolean stockOwned = false;
+        DefaultTableModel t = (DefaultTableModel) table.getModel();
+        Object[] options = {"Buy Shares", "Cancel"};
+        for (int i = 0; i < t.getRowCount(); i++) {
+            if (t.getValueAt(i, tickerIndex).toString().equals(ticker)) {
+                int n = JOptionPane.showOptionDialog(this,
+                        "Purchase *addional* shares for:\n" +
+                                "Ticker: \t " + ticker + "\n" +
+                                "Name:" + " " + "\n" +
+                                "No. of Shares: \t" + numberOfShares,
+                        "Purchase shares.",
+
+
+                        //text field number of shares
+                        //expandable section for ticker and name
+
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[0]);
+
+                stockOwned = true;
+            }
+        }
+
+        if (!stockOwned) {
+            int n = JOptionPane.showOptionDialog(this,
+                    "Purchase shares new stock:\n" +
+                            "Ticker: \t " + ticker + "\n" +
+                            "Name:" + " " + "\n" +
+                            "No. of Shares: \t" + numberOfShares,
+                    "Purchase shares.",
+
+
+                    //text field number of shares
+                    //expandable section for ticker and name
+
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+        }
+
+    }
+
+    //todo the paramater is questionable, only would sell what is owned
+    public void sellStocks() {
+        String ticker = getSelectedTicker();
+        if (ticker == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No currently selected stock.");
+        } else {
+            getSelectedTicker();
+            //number of stocks and message on what highlighted is
+
+            Object[] options = {"Sell Shares", "Cancel"};
+            String s = (String) JOptionPane.showInputDialog(
+                    this,
+                    "Enter how many shares to sell for highlighted stock:\n" +
+                            "Ticker: \t" + ticker + "\n" +
+                            "Name: \t" + getTickerName(ticker) + "\n" +
+                            "Currently Own: \t" + getTickerShareCount(ticker) + "\n\n" +
+                            "No. of Shares to sell: \t ",
+                    "Sell Shares",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    "");
+
+            //If a string was returned, say so.
+            boolean validNumber = true;
+            int num = 0;
+
+            if ((s != null) && (s.length() > 0)) {
+                try {
+                    num = Integer.parseInt(s.trim());
+                    //current stocks - num shouldnt be less than zero
+                    if (num <= 0) {
+                        JOptionPane.showMessageDialog(this,
+                                "Please enter a number greater than 0.");
+                        validNumber = false;
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this,
+                            "Please enter a valid number of stocks.");
+                    validNumber = false;
+                }
+            }
+
+            if (validNumber) {
+                confirmSell(ticker, num);
+            } else {
+                sellStocks();
+            }
+        }
+
+
+    }
+
+    private void confirmSell(String ticker, int numberOfShares) {
+        //number of stocks and message on what highlighted is
+        int currentNumberShares = getSelectedNumberShares();
+        if ((currentNumberShares - numberOfShares) < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Folio does not contain enough shares.");
+            sellStocks();
+        } else {
+
+            Object[] options = {"Confirm sale", "Cancel"};
+
+            int n = JOptionPane.showOptionDialog(this,
+                    "Sell shares for highlighted stock:\n" +
+                            "Ticker: \t" + ticker + "\n" +
+                            "Name: \t" + getTickerName(ticker) + "\n" +
+                            "No. of Shares: \t " + numberOfShares,
+                    "Confirm sale.",
+
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+            if (n == JOptionPane.YES_OPTION) {
+                //todo code for when yes
+            } else if (n == JOptionPane.NO_OPTION) {
+                //todo code for when cancelled
+            }
+        }
+    }
+
+
+    public String getTickerName(String ticker) {
+        int tickerIndex = 0;
+        int nameIndex = 1;
+        String correspondingName = null;
+        DefaultTableModel t = (DefaultTableModel) table.getModel();
+
+        for (int i = 0; i < t.getRowCount(); i++) {
+            if (t.getValueAt(i, tickerIndex).toString().equals(ticker)) {
+                correspondingName = t.getValueAt(i, nameIndex).toString();
+            }
+        }
+        
+        return correspondingName;
+    }
+
+    public int getTickerShareCount(String ticker) {
+        int tickerIndex = 0;
+        int numberIndex = 2;
+        int correspondingNum  = -1;
+        DefaultTableModel t = (DefaultTableModel) table.getModel();
+
+        for (int i = 0; i < t.getRowCount(); i++) {
+            if (t.getValueAt(i, tickerIndex).toString().equals(ticker)) {
+                correspondingNum = Integer.parseInt(t.getValueAt(i, numberIndex).toString());
+            }
+        }
+
+
+        return correspondingNum;
+    }
+
+    public int getSelectedNumberShares() {
+        int numberSharesIndex = 2;
+        int selectedIndex = table.getSelectedRow();
+        DefaultTableModel t = (DefaultTableModel) table.getModel();
+
+        if (selectedIndex >= 0) {
+            int numberShares = Integer.parseInt(t.getValueAt(selectedIndex, numberSharesIndex).toString());
+            System.out.println(numberShares);
+            return numberShares;
+        }
+
+        return -1;
+    }
+
+    public String getSelectedTicker() {
+        int tickerIndex = 0;
+        int selectedIndex = table.getSelectedRow();
+        DefaultTableModel t = (DefaultTableModel) table.getModel();
+
+        if (selectedIndex >= 0) {
+            String ticker = t.getValueAt(selectedIndex, tickerIndex).toString();
+
+            System.out.println(ticker);
+
+            return ticker;
+        }
+
+        return null;
+    }
 
     @Override
     public void update(Observable o, Object arg) {

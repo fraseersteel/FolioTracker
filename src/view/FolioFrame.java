@@ -79,6 +79,7 @@ public class FolioFrame extends JFrame implements Observer {
     //cleaner for reloading save
 
     //could use method to delete
+    //potentially unreliable
     public void setTabbedPane(List<IPortfolio> newPortfolios) {
         //store portfolio name, or id or smth
         IPortfolio currentlySelectedFolio = null;
@@ -118,8 +119,20 @@ public class FolioFrame extends JFrame implements Observer {
         }
     }
 
+    public void insertProfile(String name, StockTable table){
+        profiles.put(name, table);
+        tabbedPane.addTab(name, null, table,
+                "Does nothing");
+    }
 
+    public StockTable getFolioStockTable(String folioName) {
+            return profiles.get(folioName);
+    }
+public void addStockToFolio(String folioName, String ticker, String stockName, int numberShares, double currentStockPrice) {
+        StockTable table = profiles.get(folioName);
+        table.insertValues(ticker, stockName, numberShares, currentStockPrice);
 
+    }
 
     @Override
     public void update(Observable o, Object arg) {
