@@ -38,15 +38,6 @@ public class Portfolio extends Observable implements IPortfolio {
     }
 
     @Override
-    public Double getTotalValue(){
-        Double total = 0.0;
-        for(Stock stock : stockMap.values()){
-            total += stock.getValueOfHolding();
-        }
-        return total;
-    }
-
-    @Override
     public String getPortfolioName() {
         return folioName;
     }
@@ -61,12 +52,23 @@ public class Portfolio extends Observable implements IPortfolio {
         return stockMap.get(name);
     }
 
-    @Override
-    public boolean removeStock(String tickerSymbol) {
+    public void sellStock(String tickerSymbol, int numOfShares){
+
+    }
+
+    private boolean removeStock(String tickerSymbol) {
         return stockMap.remove(tickerSymbol) != null;
     }
 
-    public void createStock(String tickerSymbol, int numOfShares) {
+    public void buyStock(String tickerSymbol, int numOfShares){
+        if(stockMap.containsKey(tickerSymbol)){
+            stockMap.get(tickerSymbol);
+        }else{
+            createStock(tickerSymbol, numOfShares);
+        }
+    }
+
+    private void createStock(String tickerSymbol, int numOfShares) {
         Stock newStock = new Stock(tickerSymbol, tickerSymbol + "Name", numOfShares);
         stockMap.put(tickerSymbol,newStock);
         Prices.addTicker(tickerSymbol);

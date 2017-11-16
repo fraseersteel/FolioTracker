@@ -12,33 +12,26 @@ import java.util.List;
 
 public class FolioFrame extends JFrame implements Observer, IFolioFrame {
 
-    private JPanel contentPane;
+    private JPanel contentpane;
     private JTabbedPane tabbedPane;
 
     private IPortfolioTracker portfolioTracker;
 
-    private JPanel contentpane;
-    private IPortfolioTracker model;
     private Map<String, StockTable> profiles = new HashMap<String, StockTable>();
 
     // Used to get currently selected portfolio
     private List<IPortfolio> portfolios;
 
-    public FolioFrame() {
-        contentPane = new JPanel();
-        setContentPane(contentPane);
-        //contentPane.setLayout(new BorderLayout());
-
-        portfolios = new ArrayList<>();
-
+    public FolioFrame(IPortfolioTracker portfolioTracker){
+        this.portfolioTracker = portfolioTracker;
+        contentpane = new JPanel();
+        setContentPane(contentpane);
+//        contentpane.setLayout(new BoxLayout(contentpane, BoxLayout.PAGE_AXIS));
+//        contentpane.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
+            portfolios = new ArrayList<>();
         setupFrame();
         setupMenuBar();
         setupComponents();
-
-
-
-
-//        contentpane.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
 
         // setupMenuBar();
         // setupComponents();
@@ -52,7 +45,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
         }
     }
 
-    private void setupFrame() {
+    private void setupFrame(){
         setLayout(new GridLayout(1, 1));
         setTitle("FolioTracker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,7 +62,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
                 "Does nothing");
     }
 
-    private void setupMenuBar(){
+    private void setupMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Folio");
         menuBar.add(menu);
@@ -118,7 +111,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
             }
 
 
-            table.insertValues("hi", "there", index, 1.0);
+//            table.insertValues("hi");
             //todo
             portfolios.add(i);
             tabbedPane.addTab(i.getPortfolioName(), null, table);

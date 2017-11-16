@@ -17,16 +17,16 @@ public class Prices extends Observable{
 
     public static boolean addTicker(String ticker){
         if(!mostRecentPrices.containsKey(ticker)){
-//            String str;
-//            try {
-//                str = StrathQuoteServer.getLastValue(ticker);
-//            } catch (Exception e) {
-//                return false;
-//            }
-////            System.out.println("found: " + str);
-//            Double dbl = Double.parseDouble(str);
-//            System.out.println("Double: " + dbl);
-            mostRecentPrices.put(ticker, 0.0);
+            String str;
+            try {
+                str = StrathQuoteServer.getLastValue(ticker);
+            } catch (Exception e) {
+                return false;
+            }
+//            System.out.println("found: " + str);
+            Double dbl = Double.parseDouble(str);
+            System.out.println("Double: " + dbl);
+            mostRecentPrices.put(ticker, dbl);
             return true;
         }
         return false;
@@ -55,6 +55,6 @@ public class Prices extends Observable{
             } catch (Exception e) {}
         }
         setChanged();
-        notifyObservers(ViewUpdateType.PRICE);
+        notifyObservers(ViewUpdateType.STOCKPRICE);
     }
 }

@@ -2,6 +2,7 @@
 //todo this class could store a reference to the portfolio it is based off.
 package view;
 
+import controller.StockListener;
 import model.IPortfolio;
 import model.IStock;
 import model.ViewUpdateType;
@@ -10,10 +11,14 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
 public class StockTable extends JPanel implements Observer, IStockTable {
+
+    private static final int NumSharesField = 2;
+    private static final int SharePriceField = 3;
 
     private IPortfolio portfolio;
     private CustomScrollPane scrollPane;
@@ -103,7 +108,6 @@ public class StockTable extends JPanel implements Observer, IStockTable {
         table.getColumnModel().getColumn(2).setPreferredWidth(100);
         table.getColumnModel().getColumn(3).setPreferredWidth(50);
         table.getColumnModel().getColumn(4).setPreferredWidth(50);
-
         table.setShowGrid(true);
         table.setDragEnabled(false);
         table.setShowVerticalLines(true);
@@ -111,9 +115,6 @@ public class StockTable extends JPanel implements Observer, IStockTable {
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) table.getModel());
         table.setRowSorter(sorter);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        JPanel tablePanel = new JPanel();
-        tablePanel.add(table);
 
         scrollPane.setViewportView(table);
     }
@@ -224,7 +225,7 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     public void clearTable() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-        repaint();
+//        repaint();
     }
 
     public void filterTable(String string) {
@@ -233,7 +234,7 @@ public class StockTable extends JPanel implements Observer, IStockTable {
             table.setRowSorter(rowFilter);
             rowFilter.setRowFilter(RowFilter.regexFilter("(?i)" + string));
         }
-        //   repaint();
+//        repaint();
     }
 
     public void insertValues(String ticker){
@@ -247,20 +248,35 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     @Override
     public void update(Observable o, Object arg) {
         System.out.println("update: " + portfolio.getPortfolioName());
-        if(arg.equals(ViewUpdateType.PRICE)){
-            DefaultTableModel model = (DefaultTableModel) table.getModel();
-            double total = 0.0;
-            for(int i =0; i< model.getRowCount(); i++){
-                String ticker = (String) model.getValueAt(i, 0);
-                IStock stock =portfolio.getStockByTicker(ticker);
-                double value =  stock.getValueOfHolding();
-                total += value;
-                model.setValueAt(stock.getPricePerShare(), i ,3);
-                model.setValueAt(value, i ,4);
+        if(arg.equals(ViewUpdateType.STOCKPRICE)){
+            totalValueLabel.setText("Total Value: " + updateField(SharePriceField));
+        }else if(arg.equals(ViewUpdateType.NUMBEROFSHARES)){
+            totalValueLabel.setText("Total Value: " + updateField(NumSharesField));
+        }else if(arg.equals(ViewUpdateType.CREATION) || arg.equals(ViewUpdateType.DELETION)){
+            clearTable();
+            for(String ticker : portfolio.getStockTickers()){
+                insertValues(ticker);
             }
-
-            totalValueLabel.setText("Total Value: " + total);
-            System.out.println("Updated StockTable: " + portfolio.getPortfolioName());
+            //TODO think of a smarter way to know what hasnt changed
         }
+        System.out.println("Updated StockTable: " + portfolio.getPortfolioName());
+    }
+
+    private double updateField(int field){
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        double total = 0.0;
+        for(int i =0; i< model.getRowCount(); i++){
+            String ticker = (String) model.getValueAt(i, 0);
+            IStock stock =portfolio.getStockByTicker(ticker);
+            double value =  stock.getValueOfHolding();
+            total += value;
+            if(field == SharePriceField){
+                model.setValueAt(stock.getPricePerShare(), i ,field);
+            }else {
+                model.setValueAt(stock.getNumShares(), i ,field);
+            }
+            model.setValueAt(value, i ,4);
+        }
+        return total;
     }
 }

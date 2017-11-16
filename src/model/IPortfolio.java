@@ -10,10 +10,7 @@ public interface IPortfolio {
 
     IStock getStockByTicker(String ticker);
 
-    void createStock(String tickerSymbol, int numOfShares);
+    void buyStock(String tickerSymbol, int numOfShares);
 
-    boolean removeStock(String tickerSymbol);
-
-    Double getTotalValue();
-
+    void sellStock(String tickerSymbol, int numOfShares);
 }
