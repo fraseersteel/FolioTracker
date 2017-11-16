@@ -38,10 +38,7 @@ public class Driver {
         table.insertValues("z1", "zzzzz", 10, 40.0);
 
 
-        table.buyStocks("aasd", "alp stocks", 1);
-        table.confirmBuy("a", 1);
-
-
+        table.buyStocks();
         table.sellStocks();
 
 

@@ -253,38 +253,57 @@ public class StockTable extends JPanel implements Observer {
 
 
     //popup windows
-    public void buyStocks(String ticker, String name, int numberOfShares) {
+    public void buyStocks() {
+        String ticker = getSelectedTicker();
+        if (ticker == null) {
+            //no currently selected stock
+
+            JTextField xField = new JTextField(5);
+            JTextField yField = new JTextField(5);
+            JPanel myPanel = new JPanel();
+            myPanel.add(new JLabel("x:"));
+            myPanel.add(xField);
+            myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+            myPanel.add(new JLabel("y:"));
+            myPanel.add(yField);
+
+
+            Object[] options = {"Buy Shares", "Cancel"};
+            int n = JOptionPane.showOptionDialog(this,
+                    myPanel,
+                    "Purchase shares.",
+
+
+                    //text field number of shares
+                    //expandable section for ticker and name
+
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+            if (n == JOptionPane.YES_OPTION) {
+                //label.setText("al");
+            } else if (n == JOptionPane.NO_OPTION) {
+                //label.setText("ba");
+            } else {
+                //label.setText("Come on -- 'fess up!");
+            }
+
+
+
+        } else {
+            //provide option for currently selected stock OR a manually entered stock
+
+
+
+        }
         //option to enter ticker, name, and number
         //option to purchase additional for highlighted (and message sayting what highlighted is) and number
 
-        /** Sets the text displayed at the bottom of the frame. */
-        JLabel label = new JLabel();
 
 
-        Object[] options = {"Buy Shares", "Cancel"};
-        int n = JOptionPane.showOptionDialog(this,
-                "Purchase shares for highlighted stock:\n" +
-                        "Ticker: \t " + ticker + "\n" +
-                        "Name:" + "\n" +
-                        "there should be a hidable menu here",
-                "Purchase shares.",
 
-
-                //text field number of shares
-                //expandable section for ticker and name
-
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]);
-        if (n == JOptionPane.YES_OPTION) {
-            //label.setText("al");
-        } else if (n == JOptionPane.NO_OPTION) {
-            //label.setText("ba");
-        } else {
-            //label.setText("Come on -- 'fess up!");
-        }
 
 
     }
@@ -367,30 +386,36 @@ public class StockTable extends JPanel implements Observer {
             boolean validNumber = true;
             int num = 0;
 
-            if ((s != null) && (s.length() > 0)) {
-                try {
-                    num = Integer.parseInt(s.trim());
-                    //current stocks - num shouldnt be less than zero
-                    if (num <= 0) {
+            if (s != null) {
+                if (s.length() == 0) {
+                    validNumber = false;
+                    JOptionPane.showMessageDialog(this,
+                            "Please enter a valid number or press cancel.");
+                } else {
+                    try {
+                        num = Integer.parseInt(s.trim());
+                        //current stocks - num shouldnt be less than zero
+                        if (num <= 0) {
+                            JOptionPane.showMessageDialog(this,
+                                    "Please enter a number greater than 0.");
+                            validNumber = false;
+                        }
+                    } catch (NumberFormatException e) {
                         JOptionPane.showMessageDialog(this,
-                                "Please enter a number greater than 0.");
+                                "Please enter a valid number of stocks.");
                         validNumber = false;
                     }
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this,
-                            "Please enter a valid number of stocks.");
-                    validNumber = false;
+                }
+
+                if (validNumber) {
+                    if (num > 0) {
+                        confirmSell(ticker, num);
+                    }
+                } else {
+                    sellStocks();
                 }
             }
-
-            if (validNumber) {
-                confirmSell(ticker, num);
-            } else {
-                sellStocks();
-            }
         }
-
-
     }
 
     private void confirmSell(String ticker, int numberOfShares) {
@@ -417,9 +442,9 @@ public class StockTable extends JPanel implements Observer {
                     options,
                     options[0]);
             if (n == JOptionPane.YES_OPTION) {
-                //todo code for when yes
+                //todo code for when yes. likely call a method in controller, as cant have acctionlistner
             } else if (n == JOptionPane.NO_OPTION) {
-                //todo code for when cancelled
+                //todo code for when cancelled likely call a method in controller, as cant have acctionlistner
             }
         }
     }
@@ -443,7 +468,7 @@ public class StockTable extends JPanel implements Observer {
     public int getTickerShareCount(String ticker) {
         int tickerIndex = 0;
         int numberIndex = 2;
-        int correspondingNum  = -1;
+        int correspondingNum = -1;
         DefaultTableModel t = (DefaultTableModel) table.getModel();
 
         for (int i = 0; i < t.getRowCount(); i++) {
@@ -451,8 +476,6 @@ public class StockTable extends JPanel implements Observer {
                 correspondingNum = Integer.parseInt(t.getValueAt(i, numberIndex).toString());
             }
         }
-
-
         return correspondingNum;
     }
 
