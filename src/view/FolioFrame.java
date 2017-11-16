@@ -2,7 +2,6 @@ package view;
 
 import model.IPortfolio;
 import model.IPortfolioTracker;
-//import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,9 +13,7 @@ public class FolioFrame extends JFrame implements Observer {
     private JPanel contentPane;
     private JTabbedPane tabbedPane;
 
-
     private IPortfolioTracker model;
-
     private Map<String, StockTable> profiles = new HashMap<String, StockTable>();
 
     // Used to get currently selected portfolio
@@ -46,11 +43,10 @@ public class FolioFrame extends JFrame implements Observer {
     }
 
     private void setupFrame() {
-setLayout(new GridLayout());
-
+        setLayout(new GridLayout(1, 1));
         setTitle("FolioTracker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(900, 750));
+        setPreferredSize(new Dimension(700, 550));
         pack();
         setVisible(true);
     }
@@ -74,16 +70,6 @@ setLayout(new GridLayout());
         add(tabbedPane);
     }
 
-
-    /***
-     private void insertProfile(String name, StockTable table) {
-     profiles.put(name, new StockTable());
-     tabbedPane.addTab(name, null, table,
-     "Does nothing");
-     }
-     ***/
-
-
     //todo come back to tab system, concurrency? results in errors in test driver with 500ms delay between adding
     // fine with 5000ms
     //should rarely happen
@@ -99,17 +85,26 @@ setLayout(new GridLayout());
             currentlySelectedFolio = portfolios.get(tabbedPane.getSelectedIndex());
         }
 
-        portfolios = newPortfolios;
+        portfolios = new ArrayList<>();
         tabbedPane.setSelectedIndex(-1);
-
         tabbedPane.removeAll();
 
-        StockTable table = new StockTable();
         int index = 0;
-        for (IPortfolio i : portfolios) {
+        for (IPortfolio i : newPortfolios) {
+            StockTable table;
+            if (!profiles.containsKey(i.getPortfolioName())) {
+                table = new StockTable();
+                profiles.put(i.getPortfolioName(), table);
+            } else {
+                table = profiles.get(i.getPortfolioName());
+            }
+
+
+            table.insertValues("hi", "there", index, 1.0);
             //todo
-            table = null;
+            portfolios.add(i);
             tabbedPane.addTab(i.getPortfolioName(), null, table);
+
 
             //todo can only be tested properly after hide/unhide, loading from save as thats when folio list can change
             //(presumably making a new folio would set the index to that)
@@ -120,7 +115,6 @@ setLayout(new GridLayout());
             index++;
         }
     }
-
 
     @Override
     public void update(Observable o, Object arg) {
