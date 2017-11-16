@@ -28,7 +28,11 @@ public class StockListener implements ActionListener {
             case "sell":
                 //            folioModel.sellStock(selectedTickerName, numOfShares);
                 break;
-            case "change name":
+            case "rename":
+                //          folioModel.renameStock(TickerName);
+                break;
+            case "sell all":
+                //          folioModel.sellAll();
                 break;
         }
     }

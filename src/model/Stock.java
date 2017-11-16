@@ -55,5 +55,8 @@ public class Stock implements IStock {
         this.valueOfHolding = valueOfHolding;
     }
 
+    public void deleteStock(Stock stock){
+        stock = null;
+    }
 
 }

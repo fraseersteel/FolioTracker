@@ -1,9 +1,12 @@
 package view;
 
+import controller.PortfolioListener;
 import model.IPortfolioTracker;
 //import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -49,13 +52,30 @@ public class FolioFrame extends JFrame implements Observer {
     private void initMenuBar(){
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Folio");
-        JMenuItem open = new JMenuItem("Open");
         JMenuItem options = new JMenuItem("Options");
+        JMenuItem open = new JMenuItem("Open");
+            open.setMnemonic(KeyEvent.VK_E);
+            open.addActionListener(new PortfolioListener(model));
+        JMenuItem sellAll = new JMenuItem("Sell All");
+            sellAll.setMnemonic(KeyEvent.VK_E);
+            sellAll.addActionListener(new PortfolioListener(model));
+        JMenuItem exit = new JMenuItem("Exit");
+            exit.setMnemonic(KeyEvent.VK_E);
+            exit.addActionListener(new PortfolioListener(model));
+        JMenuItem save = new JMenuItem("Save");
+            save.setMnemonic(KeyEvent.VK_E);
+            save.addActionListener(new PortfolioListener(model));
         menuBar.add(menu);
         menu.add(open);
         menu.add(options);
+        menu.add(sellAll);
+        menu.add(save);
+        menu.add(exit);
         setJMenuBar(menuBar);
     }
+
+
+
 
     private void initComponents(){
         contentpane.add(tabbedPane);
@@ -65,5 +85,10 @@ public class FolioFrame extends JFrame implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         // updates to the folios?
+    }
+
+
+    public static void main(String[] args) {
+        FolioFrame folioFrame = new FolioFrame();
     }
 }
