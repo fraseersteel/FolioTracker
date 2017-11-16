@@ -70,7 +70,7 @@ public class FolioFrame extends JFrame implements Observer {
     public void setupComponents() {
         tabbedPane = new JTabbedPane();
         add(tabbedPane);
-    }
+    } 
 
     //todo come back to tab system, concurrency? results in errors in test driver with 500ms delay between adding
     // fine with 5000ms
