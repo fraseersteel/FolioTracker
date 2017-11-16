@@ -5,6 +5,7 @@ import model.Prices;
 //import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -17,28 +18,35 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
 
     private JPanel contentpane;
     private Map<String, StockTable> profiles = new HashMap<String, StockTable>();
-    private JTabbedPane tabbedPane = new JTabbedPane();
+    private JTabbedPane tabbedPane;
 
     public FolioFrame(IPortfolioTracker portfolioTracker){
-        setTitle("FolioTracker");
         this.portfolioTracker = portfolioTracker;
         contentpane = new JPanel();
-        contentpane.setLayout(new BoxLayout(contentpane, BoxLayout.PAGE_AXIS));
+        setContentPane(contentpane);
+//        contentpane.setLayout(new BoxLayout(contentpane, BoxLayout.PAGE_AXIS));
 //        contentpane.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
 
-        initMenuBar();
-        initComponents();
-        setUpFrame();
+        setupFrame();
+        setupMenuBar();
+        setupComponents();
         for(String name : portfolioTracker.getPortfolioNames()){
             insertProfile(name);
         }
     }
 
-    private void setUpFrame(){
+    private void setupFrame(){
+        setLayout(new GridLayout(1, 1));
+        setTitle("FolioTracker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(500, 200, 825, 400);
+        setPreferredSize(new Dimension(700, 550));
+        pack();
         setVisible(true);
-        this.setContentPane(contentpane);
+    }
+
+    public void setupComponents() {
+        tabbedPane = new JTabbedPane();
+        add(tabbedPane);
     }
 
     private void insertProfile(String name){
@@ -49,14 +57,17 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
                 "Does nothing");
     }
 
-    private void initMenuBar(){
+    private void setupMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Folio");
-        JMenuItem open = new JMenuItem("Open");
-        JMenuItem options = new JMenuItem("Options");
         menuBar.add(menu);
+
+        JMenuItem open = new JMenuItem("Open");
         menu.add(open);
+
+        JMenuItem options = new JMenuItem("Options");
         menu.add(options);
+
         setJMenuBar(menuBar);
     }
 

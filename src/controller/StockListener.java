@@ -12,20 +12,22 @@ public class StockListener implements ActionListener {
     private IPortfolio folioModel;
     private IStockTable stockTable;
 
-    public StockListener(IPortfolio folioModel) {
+    public StockListener(IPortfolio folioModel, IStockTable stockTable) {
+        this.stockTable = stockTable;
         this.folioModel = folioModel;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
+        System.out.println("ACTION: " + action);
 //        String selectedTickerName = stockTable.getSelectedTicker();
 //        int numOfShares           = stockTable.getSelectedNum();
         switch(action){
-            case "buy":
-                //            folioModel.buyStock(selectedTickerName, numOfShares);
+            case "Buy Stocks":
+                
                 break;
-            case "sell":
+            case "Sell Stocks":
                 //            folioModel.sellStock(selectedTickerName, numOfShares);
                 break;
             case "change name":

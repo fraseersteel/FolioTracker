@@ -22,16 +22,23 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
             while(true) {
                 System.out.println("Refreshing");
                 prices.refresh();
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         thread.start();
     }
 
     private void populate(){
-        Portfolio port1 = new Portfolio("1test");
-        portfolioList.put(port1.getPortfolioName(), port1);
-        Portfolio port2 = new Portfolio("2test");
-        portfolioList.put(port2.getPortfolioName(), port2);
+        createAndAdd("1test");
+        createAndAdd("2test");
+    }
+
+    private void createAndAdd(String name){
+        portfolioList.put(name, new Portfolio(name));
     }
 
     @Override
@@ -47,6 +54,24 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     @Override
     public void addObserverToPrices(Observer observer) {
         prices.addObserver(observer);
+    }
+
+    @Override
+    public boolean deletePortfolioByName(String name) {
+        if(portfolioList.containsKey(name)){
+            portfolioList.remove(name);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean createPortfolio(String name) {
+        if(!portfolioList.containsKey(name)){
+            createAndAdd(name);
+            return true;
+        }
+        return false;
     }
 //
 //    public List<Portfolio> getPortFoilioList() {

@@ -12,6 +12,10 @@ public interface IPortfolioTracker {
 
     void addObserverToPrices(Observer observer);
 
+    boolean deletePortfolioByName(String name);
+
+    boolean createPortfolio(String name);
+
     void savePortfolios();
 
     void loadPortfolioFromFile();

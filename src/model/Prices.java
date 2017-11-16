@@ -55,6 +55,6 @@ public class Prices extends Observable{
             } catch (Exception e) {}
         }
         setChanged();
-        notifyObservers(ViewUpdateType.PRICE);
+        notifyObservers(ViewUpdateType.STOCKPRICE);
     }
 }
