@@ -88,6 +88,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
     //cleaner for reloading save
 
     //could use method to delete
+    //potentially unreliable, use insertprofile for time being
     public void setTabbedPane(List<IPortfolio> newPortfolios) {
         //store portfolio name, or id or smth
         IPortfolio currentlySelectedFolio = null;
@@ -104,7 +105,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
         for (IPortfolio i : newPortfolios) {
             StockTable table;
             if (!profiles.containsKey(i.getPortfolioName())) {
-                table = new StockTable();
+                table = new StockTable(i);
                 profiles.put(i.getPortfolioName(), table);
             } else {
                 table = profiles.get(i.getPortfolioName());
@@ -127,7 +128,10 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
         }
     }
 
-
+    //get the stock table for corresponding folio name. returns null if name not in hashmap
+    public StockTable getFolioStockTable(String folioName) {
+        return profiles.get(folioName);
+    }
 
 
     @Override
