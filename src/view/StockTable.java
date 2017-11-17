@@ -258,15 +258,63 @@ public class StockTable extends JPanel implements Observer {
         if (ticker == null) {
             //no currently selected stock
 
-            JTextField xField = new JTextField(5);
-            JTextField yField = new JTextField(5);
-            JPanel myPanel = new JPanel();
-            myPanel.add(new JLabel("x:"));
-            myPanel.add(xField);
-            myPanel.add(Box.createHorizontalStrut(15)); // a spacer
-            myPanel.add(new JLabel("y:"));
-            myPanel.add(yField);
+            JTextField tickerField = new JTextField();
+            JTextField stockNameField = new JTextField();
+            JTextField numberStocksField = new JTextField();
 
+            JPanel myPanel = new JPanel(new GridLayout(6, 1));
+
+
+            myPanel.add(new JLabel("Enter ticker symbol"));
+            myPanel.add(tickerField);
+            myPanel.add(new JLabel("Enter stock name"));
+            myPanel.add(stockNameField);
+            myPanel.add(new JLabel("Enter number of stocks to buy:"));
+            myPanel.add(numberStocksField);
+
+            Object[] options = {"Buy Shares", "Cancel"};
+            int n = JOptionPane.showOptionDialog(this,
+                    myPanel,
+                    "Purchase shares.",
+
+
+                    //text field number of shares
+                    //expandable section for ticker and name
+
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+            if (n == JOptionPane.YES_OPTION) {
+                //label.setText("al");
+            } else if (n == JOptionPane.NO_OPTION) {
+                //label.setText("ba");
+            } else {
+                //label.setText("Come on -- 'fess up!");
+            }
+
+            //todo placeholder call to confirm
+            confirmBuy("a", 1);
+
+        } else {
+            //provide option for currently selected stock OR a manually entered stock
+            JTextField tickerField = new JTextField();
+            JTextField stockNameField = new JTextField();
+            JTextField numberStocksField = new JTextField();
+
+            JPanel myPanel = new JPanel(new GridLayout(8, 1));
+
+
+            myPanel.add(new JLabel("Currently selected stock: " + getSelectedTicker()));
+            myPanel.add(new JLabel("Selected stock name: " + getTickerName(getSelectedTicker())));
+
+            myPanel.add(new JLabel("Enter ticker symbol"));
+            myPanel.add(tickerField);
+            myPanel.add(new JLabel("Enter stock name"));
+            myPanel.add(stockNameField);
+            myPanel.add(new JLabel("Enter number of stocks to buy:"));
+            myPanel.add(numberStocksField);
 
             Object[] options = {"Buy Shares", "Cancel"};
             int n = JOptionPane.showOptionDialog(this,
@@ -291,20 +339,11 @@ public class StockTable extends JPanel implements Observer {
             }
 
 
-
-        } else {
-            //provide option for currently selected stock OR a manually entered stock
-
-
-
         }
         //option to enter ticker, name, and number
         //option to purchase additional for highlighted (and message sayting what highlighted is) and number
-
-
-
-
-
+        //todo placeholder call to confirm
+        confirmBuy("a", 1);
 
     }
 
