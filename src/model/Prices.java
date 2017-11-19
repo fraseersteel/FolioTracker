@@ -27,9 +27,8 @@ public class Prices extends Observable{
             Double dbl = Double.parseDouble(str);
             System.out.println("Double: " + dbl);
             mostRecentPrices.put(ticker, dbl);
-            return true;
         }
-        return false;
+        return true;
     }
 
 //    public static boolean removeTicker(String ticker){

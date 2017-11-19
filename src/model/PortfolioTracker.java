@@ -1,6 +1,7 @@
 package model;
 
 import model.IPortfolioTracker;
+import view.StockTable;
 
 import javax.sound.sampled.Port;
 import java.io.*;
@@ -123,5 +124,10 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
             e.printStackTrace();
             return;
         }
+    }
+
+    @Override
+    public void addObserverToFolio(String name, Observer table) {
+        portfolioList.get(name).addObserver(table);
     }
 }

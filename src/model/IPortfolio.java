@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Observer;
 import java.util.Set;
 
 public interface IPortfolio {
@@ -10,7 +11,7 @@ public interface IPortfolio {
 
     IStock getStockByTicker(String ticker);
 
-    void buyStock(String tickerSymbol, int numOfShares);
+    boolean buyStock(String tickerSymbol, int numOfShares);
 
-    void sellStock(String tickerSymbol, int numOfShares);
+    boolean sellStock(String tickerSymbol, int numOfShares);
 }

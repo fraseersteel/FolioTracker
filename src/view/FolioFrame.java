@@ -56,6 +56,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
 
     private void insertProfile(String name){
         StockTable table = new StockTable(portfolioTracker.getPortfolioByName(name));
+        portfolioTracker.addObserverToFolio(name, table);
         portfolioTracker.addObserverToPrices(table);
         profiles.put(name, table);
         tabbedPane.addTab(name, null, table,

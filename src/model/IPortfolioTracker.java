@@ -1,5 +1,7 @@
 package model;
 
+import view.StockTable;
+
 import java.util.List;
 import java.util.Observer;
 import java.util.Set;
@@ -20,4 +22,5 @@ public interface IPortfolioTracker {
 
     void loadPortfolioFromFile();
 
+    void addObserverToFolio(String name, Observer table);
 }

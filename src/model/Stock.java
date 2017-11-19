@@ -52,6 +52,14 @@ public class Stock extends Observable implements IStock {
         this.numShares = numShares;
     }
 
+    public void buyShares(int numShares){
+        this.numShares += numShares;
+    }
+
+    public void sellShares(int numShares){
+        this.numShares -= numShares;
+    }
+
 //    public void setPricePerShare(int pricePerShare){
 //        this.pricePerShare = pricePerShare;
 //    }

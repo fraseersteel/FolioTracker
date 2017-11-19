@@ -68,10 +68,12 @@ public class StockTable extends JPanel implements Observer, IStockTable {
         JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         buyStocks = new JButton("Buy Stocks");
+        buyStocks.addActionListener(new StockListener(portfolio, this));
         buyStocks.setToolTipText("Buy shares for unowned stocks, or purchase additional shares of highlighted stock");
         buttonsPane.add(buyStocks);
 
         sellStocks = new JButton("Sell Stocks");
+        sellStocks.addActionListener(new StockListener(portfolio, this));
         sellStocks.setToolTipText("Sell shares of the currently selected stock.");
         buttonsPane.add(sellStocks);
 
@@ -167,7 +169,6 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     public void clearTable() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-//        repaint();
     }
 
     public void filterTable(String string) {
@@ -176,7 +177,6 @@ public class StockTable extends JPanel implements Observer, IStockTable {
             table.setRowSorter(rowFilter);
             rowFilter.setRowFilter(RowFilter.regexFilter("(?i)" + string));
         }
-//        repaint();
     }
 
     public void insertValues(String ticker) {
