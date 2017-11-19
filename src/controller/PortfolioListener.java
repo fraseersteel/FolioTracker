@@ -24,8 +24,18 @@ public class PortfolioListener implements ActionListener {
         switch(action){
             case "Open":
                 String newName;
-                newName = JOptionPane.showInputDialog("New Name");
-                System.out.println(newName);
+                String amount;
+                int amountInt;
+                newName = JOptionPane.showInputDialog(null, "Enter Name of Stock you would like to open","Open Stock", 1);
+                amount = JOptionPane.showInputDialog(null, "Enter number of Stocks you would like to buy","Open Stock", 1);
+                try {
+                    amountInt = Integer.parseInt(amount);
+                    System.out.println(newName);
+                    System.out.println(amountInt);
+                }catch(NumberFormatException e1){
+                    JOptionPane.showMessageDialog(null, "Please enter a valid number.");
+                }
+                // open new stock
                 break;
             case "Save":
                 portfolio.savePortfolios();
