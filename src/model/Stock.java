@@ -47,11 +47,11 @@ public class Stock implements IStock {
         this.numShares = numShares;
     }
 
-    public void setPricePerShare(int pricePerShare){
+    public void setPricePerShare(double pricePerShare){
         this.pricePerShare = pricePerShare;
     }
 
-    public void setValueOfHolding(int valueOfHolding){
+    public void setValueOfHolding(double valueOfHolding){
         this.valueOfHolding = valueOfHolding;
     }
 

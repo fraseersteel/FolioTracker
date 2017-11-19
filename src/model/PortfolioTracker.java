@@ -5,6 +5,7 @@ import model.IPortfolioTracker;
 import javax.sound.sampled.Port;
 import java.io.*;
 import java.util.List;
+import java.util.Map;
 
 public class PortfolioTracker implements IPortfolioTracker {
 
@@ -83,7 +84,7 @@ public class PortfolioTracker implements IPortfolioTracker {
 
     @Override
     public void deletePortfolio(Portfolio portfolio) {
-        getPortFoilioList().clear();
+
     }
 
 }

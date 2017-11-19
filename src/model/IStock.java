@@ -19,9 +19,9 @@ public interface IStock {
 
     void setNumShares(int numShares);
 
-    void setPricePerShare(int pricePerShare);
+    void setPricePerShare(double pricePerShare);
 
-    void setValueOfHolding(int valueOfHolding);
+    void setValueOfHolding(double valueOfHolding);
 
     void deleteStock(Stock stock);
 }
