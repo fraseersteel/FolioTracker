@@ -11,32 +11,20 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Prices extends Observable{
 
     private static Map<String, Double> mostRecentPrices = new HashMap<>();
+    private static Lock lock = new ReentrantLock();
 
-    public Prices(){
-    }
+    public Prices(){}
 
     public static boolean addTicker(String ticker){
-        if(!mostRecentPrices.containsKey(ticker)){
-            String str;
-            try {
-                str = StrathQuoteServer.getLastValue(ticker);
-            } catch (Exception e) {
-                return false;
+        try {
+            if(!mostRecentPrices.containsKey(ticker)){
+                readAndSet(ticker);
             }
-//            System.out.println("found: " + str);
-            Double dbl = Double.parseDouble(str);
-            System.out.println("Double: " + dbl);
-            mostRecentPrices.put(ticker, dbl);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-        return true;
     }
-
-//    public static boolean removeTicker(String ticker){
-//        if(mostRecentPrices.containsKey(ticker)){
-//            mostRecentPrices.remove(ticker);
-//        }
-//        return false;
-//    }
 
     public static Double getPriceOfTicker(String ticker){
         if(mostRecentPrices.containsKey(ticker)){
@@ -48,12 +36,21 @@ public class Prices extends Observable{
     public void refresh(){
         for(String ticker : mostRecentPrices.keySet()){
             try {
-                String str = StrathQuoteServer.getLastValue(ticker);
-                Double dbl = Double.parseDouble(str);
-                mostRecentPrices.put(ticker, dbl);
+                readAndSet(ticker);
             } catch (Exception e) {}
         }
         setChanged();
         notifyObservers(ViewUpdateType.STOCKPRICE);
+    }
+
+    private static void readAndSet(String ticker) throws NoSuchTickerException, WebsiteDataException {
+        lock.lock();
+        try{
+            String str = StrathQuoteServer.getLastValue(ticker);
+            Double dbl = Double.parseDouble(str);
+            mostRecentPrices.put(ticker, dbl);
+        }finally {
+            lock.unlock();
+        }
     }
 }

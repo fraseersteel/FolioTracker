@@ -10,8 +10,6 @@ public class Stock extends Observable implements IStock {
     private String ticketSymbol;
     private String stockName;
     private int numShares;
-//    private double pricePerShare;
-//    private double valueOfHolding;
 
 
 
@@ -19,8 +17,12 @@ public class Stock extends Observable implements IStock {
         this.ticketSymbol = ticketSymbol;
         this.stockName = stockName;
         this.numShares = numShares;
-//        this.pricePerShare = pricePerShare;
-//        this.valueOfHolding = valueOfHolding;
+    }
+
+    public Stock(Stock stock){
+        this.ticketSymbol = stock.getTicketSymbol();
+        this.stockName = stock.getStockName();
+        this.numShares = stock.getNumShares();
     }
 
     public String getTicketSymbol() {
@@ -59,13 +61,4 @@ public class Stock extends Observable implements IStock {
     public void sellShares(int numShares){
         this.numShares -= numShares;
     }
-
-//    public void setPricePerShare(int pricePerShare){
-//        this.pricePerShare = pricePerShare;
-//    }
-
-//    public void setValueOfHolding(int valueOfHolding){
-//        this.valueOfHolding = valueOfHolding;
-//    }
-
 }

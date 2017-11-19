@@ -1,6 +1,8 @@
 package model;
 
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Portfolio extends Observable implements IPortfolio {
 
@@ -10,7 +12,7 @@ public class Portfolio extends Observable implements IPortfolio {
     public Portfolio(String folioName){
         this.folioName = folioName;
         stockMap = new HashMap<>();
-        populate();
+//        populate();
     }
 
     private void populate(){
@@ -24,17 +26,6 @@ public class Portfolio extends Observable implements IPortfolio {
         }else{
             createStock("d",20);
         }
-
-//        Stock stock3 = new Stock("C","stockname3",1000,5.70,5700);
-//        stockMap.put(stock3.getTicketSymbol(),stock3);
-//
-//        Stock stock4 = new Stock("D","stockname4",24000,0.01,24);
-//        stockMap.put(stock4.getTicketSymbol(),stock4);
-//
-//        Stock stock5 = new Stock("E","stockname5",300,0.2,60);
-//        stockMap.put(stock5.getTicketSymbol(),stock5);
-
-
     }
 
     @Override
@@ -48,8 +39,8 @@ public class Portfolio extends Observable implements IPortfolio {
     }
 
     @Override
-    public Stock getStockByTicker(String name) {
-        return stockMap.get(name);
+    public IStock getStockByTicker(String name) {
+        return new Stock(stockMap.get(name));
     }
 
     public boolean sellStock(String tickerSymbol, int numOfShares){
@@ -58,10 +49,12 @@ public class Portfolio extends Observable implements IPortfolio {
         if(stock != null){
             if(numOfShares < stock.getNumShares()){
                 stock.sellShares(numOfShares);
-                notifyWith(ViewUpdateType.NUMBEROFSHARES);
+                setChanged();
+                notifyObservers(ViewUpdateType.NUMBEROFSHARES);
             }else if(numOfShares == stock.getNumShares()){
                 stockMap.remove(ticker);
-                notifyWith(ViewUpdateType.DELETION);
+                setChanged();
+                notifyObservers(ViewUpdateType.DELETION);
             }else{
                System.out.println("Don't have that many shares..");
             }
@@ -74,8 +67,10 @@ public class Portfolio extends Observable implements IPortfolio {
         String ticker = tickerSymbol.toUpperCase();
         Stock stock = stockMap.get(ticker);
         if(stock != null){
+            System.out.println("buying shares:" + ticker + " with :" + numOfShares);
             stock.buyShares(numOfShares);
-            notifyWith(ViewUpdateType.NUMBEROFSHARES);
+            setChanged();
+            notifyObservers(ViewUpdateType.NUMBEROFSHARES);
             return true;
         }
         return createStock(ticker, numOfShares);
@@ -84,17 +79,13 @@ public class Portfolio extends Observable implements IPortfolio {
     private boolean createStock(String tickerSymbol, int numOfShares) {
         String ticker = tickerSymbol.toUpperCase();
         if(Prices.addTicker(ticker)){
+            System.out.println("created ticker:" + ticker + " with :" + numOfShares);
             Stock newStock = new Stock(ticker, ticker + "Name", numOfShares);
             stockMap.put(ticker,newStock);
-            notifyWith(ViewUpdateType.CREATION);
+            setChanged();
+            notifyObservers(ViewUpdateType.CREATION);
             return true;
         }
         return false;
     }
-
-    private void notifyWith(ViewUpdateType type){
-        setChanged();
-        notifyObservers(type);
-    }
-
 }

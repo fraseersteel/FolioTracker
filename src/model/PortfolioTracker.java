@@ -18,7 +18,7 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
         portfolioList = new HashMap<>();
         this.fileName = "folioTracker.config";
         prices = new Prices();
-        populate();
+//        populate();
         Thread thread = new Thread(() -> {
             while(true) {
                 System.out.println("Refreshing");
@@ -61,6 +61,8 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     public boolean deletePortfolioByName(String name) {
         if(portfolioList.containsKey(name)){
             portfolioList.remove(name);
+            setChanged();
+            notifyObservers(ViewUpdateType.DELETION);
             return true;
         }
         return false;
@@ -70,14 +72,12 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     public boolean createPortfolio(String name) {
         if(!portfolioList.containsKey(name)){
             createAndAdd(name);
+            setChanged();
+            notifyObservers(ViewUpdateType.CREATION);
             return true;
         }
         return false;
     }
-//
-//    public List<Portfolio> getPortFoilioList() {
-//        return portfolioList.values();
-//    }
 
     @Override
     public void savePortfolios() {
