@@ -15,14 +15,14 @@ public class Portfolio extends Observable implements IPortfolio {
 
     private void populate(){
 
-        createStock("A",100);
+        createStock("a",100);
 
-        createStock("B", 400);
+        createStock("b", 400);
 
         if(folioName.startsWith("1test")){
             createStock("C",50);
         }else{
-            createStock("D",20);
+            createStock("d",20);
         }
 
 //        Stock stock3 = new Stock("C","stockname3",1000,5.70,5700);
@@ -35,15 +35,6 @@ public class Portfolio extends Observable implements IPortfolio {
 //        stockMap.put(stock5.getTicketSymbol(),stock5);
 
 
-    }
-
-    @Override
-    public Double getTotalValue(){
-        Double total = 0.0;
-        for(Stock stock : stockMap.values()){
-            total += stock.getValueOfHolding();
-        }
-        return total;
     }
 
     @Override
@@ -61,15 +52,49 @@ public class Portfolio extends Observable implements IPortfolio {
         return stockMap.get(name);
     }
 
-    @Override
-    public boolean removeStock(String tickerSymbol) {
-        return stockMap.remove(tickerSymbol) != null;
+    public boolean sellStock(String tickerSymbol, int numOfShares){
+        String ticker = tickerSymbol.toUpperCase();
+        Stock stock = stockMap.get(ticker);
+        if(stock != null){
+            if(numOfShares < stock.getNumShares()){
+                stock.sellShares(numOfShares);
+                notifyWith(ViewUpdateType.NUMBEROFSHARES);
+            }else if(numOfShares == stock.getNumShares()){
+                stockMap.remove(ticker);
+                notifyWith(ViewUpdateType.DELETION);
+            }else{
+               System.out.println("Don't have that many shares..");
+            }
+            return true;
+        }
+        return false;
     }
 
-    public void createStock(String tickerSymbol, int numOfShares) {
-        Stock newStock = new Stock(tickerSymbol, tickerSymbol + "Name", numOfShares);
-        stockMap.put(tickerSymbol,newStock);
-        Prices.addTicker(tickerSymbol);
+    public boolean buyStock(String tickerSymbol, int numOfShares){
+        String ticker = tickerSymbol.toUpperCase();
+        Stock stock = stockMap.get(ticker);
+        if(stock != null){
+            stock.buyShares(numOfShares);
+            notifyWith(ViewUpdateType.NUMBEROFSHARES);
+            return true;
+        }
+        return createStock(ticker, numOfShares);
+    }
+
+    private boolean createStock(String tickerSymbol, int numOfShares) {
+        String ticker = tickerSymbol.toUpperCase();
+        if(Prices.addTicker(ticker)){
+            Stock newStock = new Stock(ticker, ticker + "Name", numOfShares);
+            stockMap.put(ticker,newStock);
+            notifyWith(ViewUpdateType.CREATION);
+            return true;
+        }
+        return false;
+    }
+
+    private void notifyWith(ViewUpdateType type){
+        setChanged();
+        notifyObservers(type);
     }
 
 }
