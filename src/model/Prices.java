@@ -11,7 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Prices extends Observable{
 
     private static Map<String, Double> mostRecentPrices = new HashMap<>();
-    private static Lock lock = new ReentrantLock();
+//    private static Lock lock = new ReentrantLock();
 
     public Prices(){}
 
@@ -43,14 +43,14 @@ public class Prices extends Observable{
         notifyObservers(ViewUpdateType.STOCKPRICE);
     }
 
-    private static void readAndSet(String ticker) throws NoSuchTickerException, WebsiteDataException {
-        lock.lock();
-        try{
+    private synchronized static void readAndSet(String ticker) throws NoSuchTickerException, WebsiteDataException {
+//        lock.lock();
+//        try{
             String str = StrathQuoteServer.getLastValue(ticker);
             Double dbl = Double.parseDouble(str);
             mostRecentPrices.put(ticker, dbl);
-        }finally {
-            lock.unlock();
-        }
+//        }finally {
+//            lock.unlock();
+//        }
     }
 }

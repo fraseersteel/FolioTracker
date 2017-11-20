@@ -11,7 +11,7 @@ public interface IPortfolio {
 
     IStock getStockByTicker(String ticker);
 
-    boolean buyStock(String tickerSymbol, int numOfShares);
+    Boolean buyStock(String tickerSymbol, int numOfShares);
 
-    boolean sellStock(String tickerSymbol, int numOfShares);
+    Boolean sellStock(String tickerSymbol, int numOfShares);
 }

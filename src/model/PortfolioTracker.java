@@ -10,7 +10,6 @@ import java.util.*;
 public class PortfolioTracker extends Observable implements IPortfolioTracker {
 
     private Map<String, Portfolio> portfolioList;
-    private List<Stock> stockList;
     private String fileName;
     private Prices prices;
 
@@ -58,7 +57,7 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     }
 
     @Override
-    public boolean deletePortfolioByName(String name) {
+    public Boolean deletePortfolioByName(String name) {
         if(portfolioList.containsKey(name)){
             portfolioList.remove(name);
             setChanged();
@@ -69,7 +68,7 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     }
 
     @Override
-    public boolean createPortfolio(String name) {
+    public Boolean createPortfolio(String name) {
         if(!portfolioList.containsKey(name)){
             createAndAdd(name);
             setChanged();
@@ -80,54 +79,62 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     }
 
     @Override
-    public void savePortfolios() {
+    public Boolean savePortfolios() {
             try {
                 FileOutputStream outPut = new FileOutputStream(fileName);
                 ObjectOutputStream out = new ObjectOutputStream(outPut);
                 for (Portfolio portfolio : portfolioList.values()) {
                     out.writeObject(portfolio);
                 }
-                for (Stock stock: stockList) {
-                    out.writeObject(stock);
-                }
                 out.close();
                 outPut.close();
                 System.out.println("Data is saved in: " + fileName);
+                return true;
             } catch (IOException i) {
                 i.printStackTrace();
             }
-
+        return false;
     }
 
 
     @Override
-    public void loadPortfolioFromFile() {
-        stockList.clear();
-        portfolioList.clear();
+    public Boolean loadPortfolioFromFile() {
         try {
             FileInputStream fileIn = new FileInputStream(fileName);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             try {
                 Object inputObject = null;
                 while (true) {
+                    System.out.println("Reading: ");
                     inputObject = in.readObject();
-                    if (inputObject instanceof Portfolio)
-                        portfolioList.put(((Portfolio) inputObject).getPortfolioName(), (Portfolio) inputObject);
-                    else if (inputObject instanceof Stock)
-                        stockList.add((Stock) inputObject);
+                    portfolioList.put(((Portfolio) inputObject).getPortfolioName(), (Portfolio) inputObject);
                 }
             } catch (ClassNotFoundException | EOFException e) {
+                System.out.println("Exception: ");
                 in.close();
                 fileIn.close();
+                for (Portfolio portfolio : portfolioList.values()) {
+                    System.out.println("folio: " + portfolio.getPortfolioName());
+                    for(String name : portfolio.getStockTickers()){
+                        Prices.addTicker(name);
+                    }
+                }
+                setChanged();
+                notifyObservers(ViewUpdateType.CREATION);
+                return true;
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return;
+            return false;
         }
     }
 
     @Override
-    public void addObserverToFolio(String name, Observer table) {
-        portfolioList.get(name).addObserver(table);
+    public Boolean addObserverToFolio(String name, Observer table) {
+        if(portfolioList.containsKey(name)){
+            portfolioList.get(name).addObserver(table);
+            return true;
+        }
+        return false;
     }
 }

@@ -1,10 +1,13 @@
 package model;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Portfolio extends Observable implements IPortfolio {
+public class Portfolio extends Observable implements IPortfolio, Serializable {
+
+    private static final long serialVersionUID = 54L;
 
     private Map<String, Stock> stockMap;
     private String folioName;
@@ -43,7 +46,7 @@ public class Portfolio extends Observable implements IPortfolio {
         return new Stock(stockMap.get(name));
     }
 
-    public boolean sellStock(String tickerSymbol, int numOfShares){
+    public Boolean sellStock(String tickerSymbol, int numOfShares){
         String ticker = tickerSymbol.toUpperCase();
         Stock stock = stockMap.get(ticker);
         if(stock != null){
@@ -56,14 +59,15 @@ public class Portfolio extends Observable implements IPortfolio {
                 setChanged();
                 notifyObservers(ViewUpdateType.DELETION);
             }else{
-               System.out.println("Don't have that many shares..");
+                System.out.println("Don't have that many shares..");
+                return false;
             }
             return true;
         }
-        return false;
+        return null;
     }
 
-    public boolean buyStock(String tickerSymbol, int numOfShares){
+    public Boolean buyStock(String tickerSymbol, int numOfShares){
         String ticker = tickerSymbol.toUpperCase();
         Stock stock = stockMap.get(ticker);
         if(stock != null){
@@ -76,7 +80,7 @@ public class Portfolio extends Observable implements IPortfolio {
         return createStock(ticker, numOfShares);
     }
 
-    private boolean createStock(String tickerSymbol, int numOfShares) {
+    private Boolean createStock(String tickerSymbol, int numOfShares) {
         String ticker = tickerSymbol.toUpperCase();
         if(Prices.addTicker(ticker)){
             System.out.println("created ticker:" + ticker + " with :" + numOfShares);
@@ -86,6 +90,6 @@ public class Portfolio extends Observable implements IPortfolio {
             notifyObservers(ViewUpdateType.CREATION);
             return true;
         }
-        return false;
+        return null;
     }
 }

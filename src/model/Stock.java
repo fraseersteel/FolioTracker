@@ -2,10 +2,13 @@ package model;
 
 import model.QuoteServer.StrathQuoteServer;
 
+import java.io.Serializable;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Stock extends Observable implements IStock {
+public class Stock extends Observable implements IStock,Serializable {
+
+    private static final long serialVersionUID = 42L;
 
     private String ticketSymbol;
     private String stockName;
@@ -20,12 +23,12 @@ public class Stock extends Observable implements IStock {
     }
 
     public Stock(Stock stock){
-        this.ticketSymbol = stock.getTicketSymbol();
+        this.ticketSymbol = stock.getTickerSymbol();
         this.stockName = stock.getStockName();
         this.numShares = stock.getNumShares();
     }
 
-    public String getTicketSymbol() {
+    public String getTickerSymbol() {
         return ticketSymbol;
     }
 

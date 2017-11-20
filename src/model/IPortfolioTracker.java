@@ -12,15 +12,15 @@ public interface IPortfolioTracker {
 
     IPortfolio getPortfolioByName(String name);
 
+    Boolean deletePortfolioByName(String name);
+
+    Boolean createPortfolio(String name);
+
+    Boolean savePortfolios();
+
+    Boolean loadPortfolioFromFile();
+
+    Boolean addObserverToFolio(String name, Observer observer);
+
     void addObserverToPrices(Observer observer);
-
-    boolean deletePortfolioByName(String name);
-
-    boolean createPortfolio(String name);
-
-    void savePortfolios();
-
-    void loadPortfolioFromFile();
-
-    void addObserverToFolio(String name, Observer table);
 }
