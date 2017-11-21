@@ -40,7 +40,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
         setLayout(new GridLayout(1, 1));
         setTitle("FolioTracker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(700, 550));
+        setPreferredSize(new Dimension(900, 550));
         pack();
         setVisible(true);
     }

@@ -23,8 +23,10 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     private static final int TickerField = 0;
     private static final int StockNameField = 1;
     private static final int NumSharesField = 2;
+//    private static final int intitalPriceField = 4;
     private static final int SharePriceField = 3;
     private static final int TotalValueField = 4;
+ //   private static final int ProfitLoss = 6;
 
     private double totalValueHoldings = 0.0;
 
@@ -90,12 +92,14 @@ public class StockTable extends JPanel implements Observer, IStockTable {
         String[] columnNames = {"Ticker Symbol",
                 "Stock Name",
                 "No. of Shares",
-                "Price per Share (£)",
-                "Value of Holding (£)"};
+                "Current Price per Share (£)",
+                "Initial Price per Share (£)",
+                "Value of Holding (£)",
+                "Profit/Loss (£)"};
 
         table = new JTable();
         table.setModel(new DefaultTableModel(new Object[][]{}, columnNames) {
-            Class[] types = {String.class, String.class, Integer.class, Double.class, Double.class};
+            Class[] types = {String.class, String.class, Integer.class, Double.class, Double.class, Double.class, Double.class};
 
             @Override
             public Class getColumnClass(int columnIndex) {
@@ -133,6 +137,8 @@ public class StockTable extends JPanel implements Observer, IStockTable {
 
         );
 
+
+        //formatting cells to 2dp for £ values
         table.getColumnModel().getColumn(4).setCellRenderer(
                 new DefaultTableCellRenderer() {
 
@@ -152,11 +158,32 @@ public class StockTable extends JPanel implements Observer, IStockTable {
 
         );
 
-        table.getColumnModel().getColumn(0).setPreferredWidth(90);
-        table.getColumnModel().getColumn(1).setPreferredWidth(100);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
-        table.getColumnModel().getColumn(3).setPreferredWidth(50);
-        table.getColumnModel().getColumn(4).setPreferredWidth(50);
+        table.getColumnModel().getColumn(6).setCellRenderer(
+                new DefaultTableCellRenderer() {
+
+                    @Override
+                    public Component getTableCellRendererComponent(
+                            JTable table, Object value, boolean isSelected,
+                            boolean hasFocus, int row, int column) {
+
+                        setHorizontalAlignment(RIGHT);
+                        value = new DecimalFormat("#.00").format((double) value);
+                        return super.getTableCellRendererComponent(
+                                table, value, isSelected, hasFocus, row, column);
+
+                    }
+                }
+
+
+        );
+
+        table.getColumnModel().getColumn(0).setPreferredWidth(60);
+        table.getColumnModel().getColumn(1).setPreferredWidth(60);
+        table.getColumnModel().getColumn(2).setPreferredWidth(60);
+        table.getColumnModel().getColumn(3).setPreferredWidth(110);
+        table.getColumnModel().getColumn(4).setPreferredWidth(100);
+        table.getColumnModel().getColumn(5).setPreferredWidth(80);
+        table.getColumnModel().getColumn(6).setPreferredWidth(50);
 
         table.setShowGrid(true);
         table.setDragEnabled(false);
@@ -182,7 +209,7 @@ public class StockTable extends JPanel implements Observer, IStockTable {
 
     public IStock insertValues(String ticker) {
         IStock stock = portfolio.getStockByTicker(ticker);
-        Object[] values = {ticker, stock.getStockName(), stock.getNumShares(), stock.getPricePerShare(), stock.getValueOfHolding()};
+        Object[] values = {ticker, stock.getStockName(), stock.getNumShares(), stock.getInitalPricePerShare(), stock.getPricePerShare(), stock.getValueOfHolding(), stock.getProfitOfHolding()};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
 
         model.insertRow(model.getRowCount(), values);

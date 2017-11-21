@@ -13,6 +13,10 @@ public interface IStock {
 
     Double getValueOfHolding();
 
+    Double getInitalPricePerShare();
+
+    Double getProfitOfHolding();
+
 
     //setters
     void setStockName(String stockName);

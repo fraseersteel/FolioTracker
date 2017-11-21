@@ -44,8 +44,17 @@ public class Stock extends Observable implements IStock,Serializable {
         return Prices.getPriceOfTicker(ticketSymbol);
     }
 
+    public Double getInitalPricePerShare(){
+        double inital = Prices.getPriceOfTicker(ticketSymbol);
+        return inital;
+    }
+
     public Double getValueOfHolding() {
         return Prices.getPriceOfTicker(ticketSymbol)*numShares;
+    }
+
+    public Double getProfitOfHolding(){
+        return ((getPricePerShare()*numShares)-(numShares*getInitalPricePerShare()));
     }
 
     @Override
