@@ -62,7 +62,7 @@ public class StockListener implements ActionListener, TableModelListener {
     private void doAction(String action, String ticker){
         try{
             int i = Integer.parseInt(sharesAmountField.getText());
-            if(i > 1000000000 || i < 1){
+            if (i > 1000000000 || i < 1) {
                 displayError("Please enter a number within the range 1 to 1000000000.");
             }else{
                 doT(action, ticker, i);
@@ -145,12 +145,12 @@ public class StockListener implements ActionListener, TableModelListener {
         JPanel myPanel = new JPanel();
         GridLayout gridLayout;
 
-        if(withTickerField){
-            gridLayout = new GridLayout(2,2);
+        if (withTickerField) {
+            gridLayout = new GridLayout(2, 2);
             myPanel.add(new JLabel("Ticker:"));
             myPanel.add(tickerField);
-        }else{
-            gridLayout = new GridLayout(1,2);
+        } else {
+            gridLayout = new GridLayout(1, 2);
         }
         myPanel.setLayout(gridLayout);
 
@@ -160,7 +160,7 @@ public class StockListener implements ActionListener, TableModelListener {
         return myPanel;
     }
 
-    private void displayError(String msg){
+    private void displayError(String msg) {
         JOptionPane.showMessageDialog(
                 null,
                 msg,
@@ -172,7 +172,7 @@ public class StockListener implements ActionListener, TableModelListener {
     @Override
     public void tableChanged(TableModelEvent e) {
         if (e.getType() == TableModelEvent.UPDATE) {
-            if(e.getColumn() == 1){
+            if (e.getColumn() == 1) {
                 String ticker = stockTable.getSelectedTicker();
                 IStock stock = folioModel.getStockByTicker(ticker);
                 stock.setStockName((String) stockTable.getValueAt(e.getFirstRow(), e.getColumn()));
