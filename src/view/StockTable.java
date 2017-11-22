@@ -23,10 +23,10 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     private static final int TickerField = 0;
     private static final int StockNameField = 1;
     private static final int NumSharesField = 2;
-//    private static final int intitalPriceField = 4;
     private static final int SharePriceField = 3;
-    private static final int TotalValueField = 4;
- //   private static final int ProfitLoss = 6;
+    private static final int intitalPriceField = 4;
+    private static final int TotalValueField = 5;
+    private static final int ProfitLoss = 6;
 
     private double totalValueHoldings = 0.0;
 
@@ -158,7 +158,7 @@ public class StockTable extends JPanel implements Observer, IStockTable {
 
         );
 
-        table.getColumnModel().getColumn(6).setCellRenderer(
+        table.getColumnModel().getColumn(5).setCellRenderer(
                 new DefaultTableCellRenderer() {
 
                     @Override
@@ -209,7 +209,7 @@ public class StockTable extends JPanel implements Observer, IStockTable {
 
     public IStock insertValues(String ticker) {
         IStock stock = portfolio.getStockByTicker(ticker);
-        Object[] values = {ticker, stock.getStockName(), stock.getNumShares(), stock.getInitalPricePerShare(), stock.getPricePerShare(), stock.getValueOfHolding(), stock.getProfitOfHolding()};
+        Object[] values = {ticker, stock.getStockName(), stock.getNumShares(), stock.getPricePerShare(), stock.getInitalPricePerShare(), stock.getValueOfHolding(), stock.getProfitOfHolding()};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
 
         model.insertRow(model.getRowCount(), values);
@@ -250,10 +250,11 @@ public class StockTable extends JPanel implements Observer, IStockTable {
             total += value;
             if (field == SharePriceField) {
                 model.setValueAt(stock.getPricePerShare(), i, field);
+                model.setValueAt(stock.getProfitOfHolding(), i, ProfitLoss);
             } else {
                 model.setValueAt(stock.getNumShares(), i, field);
             }
-            model.setValueAt(value, i, 4);
+            model.setValueAt(value, i, TotalValueField);
         }
         return total;
     }
@@ -273,7 +274,7 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     }
 
     private void setTotalValueLabel(Double totalValue){
-        totalValueLabel.setText("Total Value: " +String.format("%.02f", totalValue));
+        totalValueLabel.setText("Total Value: £" +String.format("%.02f", totalValue));
     }
 
     @Override

@@ -13,6 +13,7 @@ public class Stock extends Observable implements IStock,Serializable {
     private String ticketSymbol;
     private String stockName;
     private int numShares;
+    private double initialPrice;
 
 
 
@@ -20,12 +21,14 @@ public class Stock extends Observable implements IStock,Serializable {
         this.ticketSymbol = ticketSymbol;
         this.stockName = stockName;
         this.numShares = numShares;
+        initialPrice = getPricePerShare();
     }
 
     public Stock(Stock stock){
         this.ticketSymbol = stock.getTickerSymbol();
         this.stockName = stock.getStockName();
         this.numShares = stock.getNumShares();
+        initialPrice = stock.getInitalPricePerShare();
     }
 
     public String getTickerSymbol() {
@@ -45,8 +48,7 @@ public class Stock extends Observable implements IStock,Serializable {
     }
 
     public Double getInitalPricePerShare(){
-        double inital = Prices.getPriceOfTicker(ticketSymbol);
-        return inital;
+        return initialPrice;
     }
 
     public Double getValueOfHolding() {
@@ -54,7 +56,7 @@ public class Stock extends Observable implements IStock,Serializable {
     }
 
     public Double getProfitOfHolding(){
-        return ((getPricePerShare()*numShares)-(numShares*getInitalPricePerShare()));
+        return (getValueOfHolding()-(numShares*initialPrice));
     }
 
     @Override
