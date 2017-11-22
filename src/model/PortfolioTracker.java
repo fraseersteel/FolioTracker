@@ -15,9 +15,8 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
 
     public PortfolioTracker() {
         portfolioList = new HashMap<>();
-        this.fileName = "folioTracker.config";
         prices = new Prices();
-//        populate();
+      //   populate();
         Thread thread = new Thread(() -> {
             while(true) {
                 System.out.println("Refreshing");
@@ -79,7 +78,7 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     }
 
     @Override
-    public Boolean savePortfolios() {
+    public Boolean savePortfolios(String fileName) {
             try {
                 FileOutputStream outPut = new FileOutputStream(fileName);
                 ObjectOutputStream out = new ObjectOutputStream(outPut);

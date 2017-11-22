@@ -16,7 +16,7 @@ public interface IPortfolioTracker {
 
     Boolean createPortfolio(String name);
 
-    Boolean savePortfolios();
+    Boolean savePortfolios(String fileName);
 
     Boolean loadPortfolioFromFile();
 

@@ -18,6 +18,7 @@ public class PortfolioListener implements ActionListener {
 
     private JTextField folioNameField = new JTextField(15);
     private static Lock lock = new ReentrantLock();
+    private JTextField saveFileField;
 
     public PortfolioListener(IPortfolioTracker model,IFolioFrame view) {
         this.view = view;
@@ -45,7 +46,7 @@ public class PortfolioListener implements ActionListener {
                     }
                     break;
                 case "Save Folios":
-                    model.savePortfolios();
+                    model.savePortfolios(JOptionPane.showInputDialog("Enter Filename: "));
                     break;
                 case "Delete Folio":
                     delete();
@@ -105,6 +106,7 @@ public class PortfolioListener implements ActionListener {
 
         return myPanel;
     }
+
 
     private void displayError(String msg){
         JOptionPane.showMessageDialog(
