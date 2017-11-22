@@ -33,7 +33,7 @@ public class PortfolioListener implements ActionListener {
                 break;
             case "Open Folio From File":
                 //TODO loading screen
-                Boolean b = !model.loadPortfolioFromFile();
+                Boolean b = model.loadPortfolioFromFile();
                 //TODO stop loading screen
                 if(!b){
                     displayError("Error loading Folios\n Please Make sure the file exists and is not empty.");
@@ -64,7 +64,7 @@ public class PortfolioListener implements ActionListener {
             model.deletePortfolioByName(folioName);
         }
     }
-
+  
     private void newFolio(){
         boolean inputAccepted = false;
         while(!inputAccepted) {

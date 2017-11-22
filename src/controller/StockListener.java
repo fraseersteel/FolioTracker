@@ -79,7 +79,6 @@ public class StockListener implements ActionListener, TableModelListener {
             @Override
             protected Boolean doInBackground()
             {
-                System.out.println("got here");
                 if(action.equals(ADD)){
                     String ticker = tickerField.getText().replaceAll("\\s+","");
                     return folioModel.buyStock(ticker, i);
@@ -96,14 +95,16 @@ public class StockListener implements ActionListener, TableModelListener {
             {
                 try {
                     Boolean pass = get();
+                    waiting.dispose();
                     if(pass == null){
-                        displayError("Not enough shares\n you have tried to sell more shares than you own!");
+                        displayError("Not enough shares \nyou have tried to sell more shares than you own!");
                     }else if(pass){
                         passed = true;
                     }else{
-                        displayError("No such Ticker Found. [" + ticker + "]. The ticker doesn't exist.");
+                        String thisTicker = tickerField.getText().replaceAll("\\s+", "");
+                        displayError("No such Ticker Found. [" + thisTicker + "]. The ticker doesn't exist.");
                     }
-                    waiting.dispose();
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
