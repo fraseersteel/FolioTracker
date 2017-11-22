@@ -57,7 +57,7 @@ public class StockTable extends JPanel implements Observer, IStockTable {
 
     private void setupNorthMenu() {
         totalValueLabel = new JLabel("");
-        add(totalValueLabel, BorderLayout.PAGE_START);
+        add(totalValueLabel, BorderLayout.PAGE_END);
     }
 
 
@@ -67,22 +67,32 @@ public class StockTable extends JPanel implements Observer, IStockTable {
 
         ActionListener listener = new StockListener(portfolio, this);
 
+
+
+        JPanel left = new JPanel();
+        JPanel right = new JPanel();
+
         JButton buyStocks = new JButton("Buy Shares");
         buyStocks.addActionListener(listener);
         buyStocks.setToolTipText("Buy shares for unowned stocks, or purchase additional shares of highlighted stock");
-        buttonsPane.add(buyStocks);
+        left.add(buyStocks);
 
         JButton sellStocks = new JButton("Sell Shares");
         sellStocks.addActionListener(listener);
         sellStocks.setToolTipText("Sell shares of the currently selected stock.");
-        buttonsPane.add(sellStocks);
+        left.add(sellStocks);
+
+
+
+
 
         JButton buyNewStocks = new JButton("Add Stock");
         buyNewStocks.addActionListener(listener);
         buyNewStocks.setToolTipText("Add a new Stock.");
-        buttonsPane.add(buyNewStocks);
+        right.add(buyNewStocks);
 
-        bottomMenuPane.add(buttonsPane, BorderLayout.LINE_START);
+        bottomMenuPane.add(left, BorderLayout.LINE_START);
+        bottomMenuPane.add(right, BorderLayout.LINE_END);
 
         add(bottomMenuPane, BorderLayout.PAGE_END);
     }
