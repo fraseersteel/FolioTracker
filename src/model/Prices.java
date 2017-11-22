@@ -4,12 +4,13 @@ import model.QuoteServer.NoSuchTickerException;
 import model.QuoteServer.StrathQuoteServer;
 import model.QuoteServer.WebsiteDataException;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Prices extends Observable{
+public class Prices extends Observable implements Serializable{
 
     private static Map<String, Double> mostRecentPrices = new ConcurrentHashMap<>();
     private static Lock lock = new ReentrantLock();
@@ -29,7 +30,7 @@ public class Prices extends Observable{
 
     public static Double getPriceOfTicker(String ticker){
         if(mostRecentPrices.containsKey(ticker)){
-            return mostRecentPrices.get(ticker);
+            return new Double(mostRecentPrices.get(ticker));
         }
         return null;
     }

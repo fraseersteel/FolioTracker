@@ -15,11 +15,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class StockListener implements ActionListener, TableModelListener {
 
-    private static final int ADD = 1;
-    private static final int BUY = 2;
-    private static final int SELL = 3;
-
-    private static Lock lock = new ReentrantLock();
+    private static final String ADD = "Add Stock";
+    private static final String BUY = "Buy Shares";
+    private static final String SELL = "Sell Shares";
 
     private IPortfolio folioModel;
     private IStockTable stockTable;
@@ -34,72 +32,57 @@ public class StockListener implements ActionListener, TableModelListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Thread thread = new Thread(() -> {
             String action = e.getActionCommand();
-            System.out.println("ACTION: " + action);
             String ticker = stockTable.getSelectedTicker();
 
-            switch(action){
-                case "Buy Stocks":
-                    prompt(ticker, "Buy Stocks", BUY);
-                    break;
-                case "Sell Stocks":
-                    prompt(ticker, "Sell Stocks", SELL);
-                    break;
-                case "Add Stock":
-                    prompt(ticker, "Add New Stock", ADD);
-                    break;
+            if(ticker == null && !action.equals(ADD)){
+                displayError("Row not selected\nPlease select the row with the desired stock.");
+                return;
             }
-        });
-        thread.start();
+            boolean inputAccepted = false;
+            while(!inputAccepted) {
+
+                int result = JOptionPane.showConfirmDialog(null, getPanel(action.equals(ADD)),
+                        action, JOptionPane.OK_CANCEL_OPTION);
+
+                if (result == JOptionPane.OK_OPTION) {
+                    inputAccepted = doAction(action, ticker);
+                } else {
+                    inputAccepted = true;
+                }
+            }
     }
 
-    private void prompt(String ticker, String msg, int option){
-        if(ticker == null && option != ADD){
-            displayError("Row not selected");
-            return;
-        }
-        boolean inputAccepted = false;
-        while(!inputAccepted) {
-
-            int result = JOptionPane.showConfirmDialog(null, getPanel(option ==ADD),
-                    msg, JOptionPane.OK_CANCEL_OPTION);
-
-            if (result == JOptionPane.OK_OPTION) {
-                try{
-                    int i = Integer.parseInt(sharesAmountField.getText());
-                    if(i > 1000000000 || i < 1){
-                        displayError("Please enter a number within the range 1 to 1000000000.");
-                    }else{
-                        boolean pass;
-                        if(option == ADD){
-                            String tickerWithoutSpace = tickerField.getText().replaceAll("\\s+","");
-                            lock.lock();
-                            try{
-                                pass = folioModel.buyStock(tickerWithoutSpace, i);
-                            }finally {
-                                lock.unlock();
-                            }
-                        }else if(option ==BUY){
-                            pass = folioModel.buyStock(ticker, i);
-                        }else{
-                            assert option == 3 : option;
-                            pass = folioModel.sellStock(ticker, i);
-                        }
-                        if(pass){
-                            inputAccepted = true;
-                        }else{
-                            displayError("No such Ticker. [" + ticker + "]");
-                        }
-                    }
-                }catch (NumberFormatException err){
-                    displayError("Please enter a number for amount of stock.");
+    private boolean doAction(String action, String ticker){
+        try{
+            int i = Integer.parseInt(sharesAmountField.getText());
+            if(i > 1000000000 || i < 1){
+                displayError("Please enter a number within the range 1 to 1000000000.");
+            }else{
+                Boolean pass;
+                //TODO start loading animation
+                if(action.equals(ADD)){
+                    ticker = tickerField.getText().replaceAll("\\s+","");
+                    pass = folioModel.buyStock(ticker, i);
+                }else if(action.equals(BUY)){
+                    pass = folioModel.buyStock(ticker, i);
+                }else{
+                    assert action.equals(SELL) : action;
+                    pass = folioModel.sellStock(ticker, i);
                 }
-
-            } else {
-                inputAccepted = true;
+                //TODO stop loading animation
+                if(pass == null){
+                    displayError("Not enough shares\n you have tried to sell more shares than you own!");
+                }else if(pass){
+                    return true;
+                }else{
+                    displayError("No such Ticker Found. [" + ticker + "]. The ticker doesn't exist.");
+                }
             }
+        }catch (NumberFormatException err){
+            displayError("Please enter a number for the number of shares.");
         }
+        return false;
     }
 
     private JPanel getPanel(boolean withTickerField) {
@@ -115,7 +98,7 @@ public class StockListener implements ActionListener, TableModelListener {
         }
         myPanel.setLayout(gridLayout);
 
-        myPanel.add(new JLabel("AmountOfStock:"));
+        myPanel.add(new JLabel("Number of shares:"));
         myPanel.add(sharesAmountField);
 
         return myPanel;

@@ -17,7 +17,6 @@ public class PortfolioListener implements ActionListener {
     private IFolioFrame view;
 
     private JTextField folioNameField = new JTextField(15);
-    private static Lock lock = new ReentrantLock();
 
     public PortfolioListener(IPortfolioTracker model,IFolioFrame view) {
         this.view = view;
@@ -26,36 +25,30 @@ public class PortfolioListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Thread thread = new Thread(() -> {
-            String action = e.getActionCommand();
+        String action = e.getActionCommand();
 
-            switch(action){
-                case "New Folio":
-                    newFolio();
-                    break;
-                case "Open Folio From File":
-                    if(lock.tryLock()){
-                        try{
-                            model.loadPortfolioFromFile();
-                        }finally {
-                            lock.unlock();
-                        }
-                    }else{
-                        displayError("Folios currently loading, please wait until loading has finished.");
-                    }
-                    break;
-                case "Save Folios":
-                    model.savePortfolios();
-                    break;
-                case "Delete Folio":
-                    delete();
-                    break;
-                case "Exit":
-                    System.exit(0);
-                    break;
-            }
-        });
-        thread.start();
+        switch(action){
+            case "New":
+                newFolio();
+                break;
+            case "Open Folio From File":
+                //TODO loading screen
+                Boolean b = !model.loadPortfolioFromFile();
+                //TODO stop loading screen
+                if(!b){
+                    displayError("Error loading Folios\n Please Make sure the file exists and is not empty.");
+                }
+                break;
+            case "Save Folios":
+                model.savePortfolios();
+                break;
+            case "Delete":
+                delete();
+                break;
+            case "Exit":
+                System.exit(0);
+                break;
+        }
     }
 
     private void delete() {
@@ -64,7 +57,7 @@ public class PortfolioListener implements ActionListener {
             displayError("No Folio To Delete.");
             return;
         }
-        int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete folio: " + folioName,
+        int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete folio: [" + folioName + "]",
                 "Delete Selected Folio", JOptionPane.OK_CANCEL_OPTION);
 
         if (result == JOptionPane.OK_OPTION) {
@@ -82,9 +75,9 @@ public class PortfolioListener implements ActionListener {
             if (result == JOptionPane.OK_OPTION) {
                 String text = folioNameField.getText();
                 if(text == null || text.equals("")){
-                    displayError("Creation failed, please enter a name");
+                    displayError("Creation failed, please enter a name.");
                 }else if(!model.createPortfolio(text)){
-                     displayError("Creation failed, is the name already in use?");
+                     displayError("Creation failed, name ["+text+ "] is already in use.");
                 }else{
                     inputAccepted = true;
                 }

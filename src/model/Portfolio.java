@@ -15,25 +15,19 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
     public Portfolio(String folioName){
         this.folioName = folioName;
         stockMap = new HashMap<>();
-//        populate();
     }
 
-    private void populate(){
-
-        createStock("a",100);
-
-        createStock("b", 400);
-
-        if(folioName.startsWith("1test")){
-            createStock("C",50);
-        }else{
-            createStock("d",20);
+    public Portfolio(IPortfolio portfolio){
+        this.folioName = portfolio.getPortfolioName();
+        stockMap = new HashMap<>();
+        for(String s : getStockTickers()){
+            stockMap.put(s, (Stock) portfolio.getStockByTicker(s));
         }
     }
 
     @Override
     public String getPortfolioName() {
-        return folioName;
+        return new String(folioName);
     }
 
     @Override
@@ -43,7 +37,7 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
 
     @Override
     public IStock getStockByTicker(String name) {
-        return new Stock(stockMap.get(name));
+        return stockMap.get(name);
     }
 
     public Boolean sellStock(String tickerSymbol, int numOfShares){
@@ -59,19 +53,17 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
                 setChanged();
                 notifyObservers(ViewUpdateType.DELETION);
             }else{
-                System.out.println("Don't have that many shares..");
-                return false;
+                return null;
             }
             return true;
         }
-        return null;
+        return false;
     }
 
     public Boolean buyStock(String tickerSymbol, int numOfShares){
         String ticker = tickerSymbol.toUpperCase();
         Stock stock = stockMap.get(ticker);
         if(stock != null){
-            System.out.println("buying shares:" + ticker + " with :" + numOfShares);
             stock.buyShares(numOfShares);
             setChanged();
             notifyObservers(ViewUpdateType.NUMBEROFSHARES);
@@ -83,13 +75,12 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
     private Boolean createStock(String tickerSymbol, int numOfShares) {
         String ticker = tickerSymbol.toUpperCase();
         if(Prices.addTicker(ticker)){
-            System.out.println("created ticker:" + ticker + " with :" + numOfShares);
             Stock newStock = new Stock(ticker, ticker + "Name", numOfShares);
             stockMap.put(ticker,newStock);
             setChanged();
             notifyObservers(ViewUpdateType.CREATION);
             return true;
         }
-        return null;
+        return false;
     }
 }

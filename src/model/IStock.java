@@ -2,7 +2,6 @@ package model;
 
 public interface IStock {
 
-    // getters
     String getTickerSymbol();
 
     String getStockName();
@@ -17,7 +16,5 @@ public interface IStock {
 
     Double getProfitOfHolding();
 
-
-    //setters
     void setStockName(String stockName);
 }

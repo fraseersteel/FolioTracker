@@ -17,24 +17,21 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
         portfolioList = new HashMap<>();
         this.fileName = "folioTracker.config";
         prices = new Prices();
-//        populate();
+        startRefresher();
+    }
+
+    private void startRefresher(){
         Thread thread = new Thread(() -> {
             while(true) {
-                System.out.println("Refreshing");
                 prices.refresh();
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(7000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
         thread.start();
-    }
-
-    private void populate(){
-        createAndAdd("1test");
-        createAndAdd("2test");
     }
 
     private void createAndAdd(String name){
@@ -99,6 +96,7 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
 
     @Override
     public Boolean loadPortfolioFromFile() {
+        int portfoliosBefore = portfolioList.values().size();
         try {
             FileInputStream fileIn = new FileInputStream(fileName);
             ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -113,8 +111,11 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
                 System.out.println("Exception: ");
                 in.close();
                 fileIn.close();
+                if(portfoliosBefore == portfolioList.values().size()){
+                    return false;
+                }
                 for (Portfolio portfolio : portfolioList.values()) {
-                    System.out.println("folio: " + portfolio.getPortfolioName());
+                    System.out.println("loading folio: " + portfolio.getPortfolioName());
                     for(String name : portfolio.getStockTickers()){
                         Prices.addTicker(name);
                     }
@@ -124,15 +125,14 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
                 return true;
             }
         } catch (IOException e) {
-            e.printStackTrace();
             return false;
         }
     }
 
     @Override
-    public Boolean addObserverToFolio(String name, Observer table) {
+    public Boolean addObserverToFolio(String name, Observer observer) {
         if(portfolioList.containsKey(name)){
-            portfolioList.get(name).addObserver(table);
+            portfolioList.get(name).addObserver(observer);
             return true;
         }
         return false;

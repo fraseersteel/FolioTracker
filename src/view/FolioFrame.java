@@ -51,7 +51,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
         portfolioTracker.addObserverToPrices(table);
         profiles.put(name, table);
         tabbedPane.addTab(name, null, table,
-                "Does nothing");
+                "");
     }
 
     private void removeProfile(String name){
@@ -64,7 +64,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
         JMenu file = new JMenu("File");
         menuBar.add(file);
 
-        PortfolioListener listener = new PortfolioListener(portfolioTracker, this);
+        ActionListener listener = new PortfolioListener(portfolioTracker, this);
         JMenuItem open = new JMenuItem("Open Folio From File");
         open.addActionListener(listener);
         file.add(open);
@@ -73,13 +73,13 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
         save.addActionListener(listener);
         file.add(save);
 
-        JMenu edit = new JMenu("Edit");
+        JMenu edit = new JMenu("Folio");
         menuBar.add(edit);
 
-        JMenuItem newFolio = new JMenuItem("New Folio");
+        JMenuItem newFolio = new JMenuItem("New");
         newFolio.addActionListener(listener);
         edit.add(newFolio);
-        JMenuItem delete = new JMenuItem("Delete Folio");
+        JMenuItem delete = new JMenuItem("Delete");
         delete.addActionListener(listener);
         edit.add(delete);
 
