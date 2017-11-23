@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Stock extends Observable implements IStock,Serializable {
+public class Stock implements IStock,Serializable {
 
     private static final long serialVersionUID = 42L;
 
@@ -15,8 +15,6 @@ public class Stock extends Observable implements IStock,Serializable {
     private int numShares;
     private double initialPrice;
 
-
-
     public Stock(String ticketSymbol,String stockName, int numShares){
         this.ticketSymbol = ticketSymbol;
         this.stockName = stockName;
@@ -24,19 +22,19 @@ public class Stock extends Observable implements IStock,Serializable {
         initialPrice = getPricePerShare();
     }
 
-    public Stock(Stock stock){
-        this.ticketSymbol = stock.getTickerSymbol();
-        this.stockName = stock.getStockName();
-        this.numShares = stock.getNumShares();
-        initialPrice = stock.getInitalPricePerShare();
-    }
+//    public Stock(Stock stock){
+//        this.ticketSymbol = stock.getTickerSymbol();
+//        this.stockName = stock.getStockName();
+//        this.numShares = stock.getNumShares();
+//        initialPrice = stock.getInitalPricePerShare();
+//    }
 
     public String getTickerSymbol() {
-        return ticketSymbol;
+        return new String(ticketSymbol);
     }
 
     public String getStockName() {
-        return stockName;
+        return new String(stockName);
     }
 
     public int getNumShares() {
@@ -48,7 +46,7 @@ public class Stock extends Observable implements IStock,Serializable {
     }
 
     public Double getInitalPricePerShare(){
-        return initialPrice;
+        return new Double(initialPrice);
     }
 
     public Double getValueOfHolding() {
@@ -60,13 +58,7 @@ public class Stock extends Observable implements IStock,Serializable {
     }
 
     @Override
-    public void setStockName(String stockName) {
-        this.stockName = stockName;
-    }
-
-    public void setNumShares(int numShares){
-        this.numShares = numShares;
-    }
+    public void setStockName(String stockName) { this.stockName = stockName; }
 
     public void buyShares(int numShares){
         this.numShares += numShares;

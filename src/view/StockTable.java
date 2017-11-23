@@ -1,5 +1,3 @@
-
-//todo this class could store a reference to the portfolio it is based off.
 package view;
 
 import controller.StockListener;
@@ -14,6 +12,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.util.Observable;
 import java.util.Observer;
@@ -55,34 +54,40 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     }
 
     private void setupNorthMenu() {
+        JPanel north = new JPanel();
         totalValueLabel = new JLabel("");
-        JButton delete = new JButton("Delete Folio");
-        add(totalValueLabel, BorderLayout.PAGE_START);
+        north.add(totalValueLabel, BorderLayout.EAST);
+
+        add(north, BorderLayout.PAGE_START);
     }
 
 
     private void setupSouthMenu() {
         JPanel bottomMenuPane = new JPanel(new BorderLayout());
-        JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
+//        JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        StockListener listener = new StockListener(portfolio, this);
+        ActionListener listener = new StockListener(portfolio, this);
 
-        JButton buyStocks = new JButton("Buy Stocks");
-        buyStocks.addActionListener(listener);
-        buyStocks.setToolTipText("Buy shares for unowned stocks, or purchase additional shares of highlighted stock");
-        buttonsPane.add(buyStocks);
+        JPanel left = new JPanel();
+        JPanel right = new JPanel();
 
-        JButton sellStocks = new JButton("Sell Stocks");
-        sellStocks.addActionListener(listener);
-        sellStocks.setToolTipText("Sell shares of the currently selected stock.");
-        buttonsPane.add(sellStocks);
+        JButton buyShares = new JButton("Buy Shares");
+        buyShares.addActionListener(listener);
+        buyShares.setToolTipText("Buy shares for unowned stocks, or purchase additional shares of highlighted stock");
+        left.add(buyShares);
+
+        JButton sellShares = new JButton("Sell Shares");
+        sellShares.addActionListener(listener);
+        sellShares.setToolTipText("Sell shares of the currently selected stock.");
+        left.add(sellShares);
 
         JButton buyNewStocks = new JButton("Add Stock");
         buyNewStocks.addActionListener(listener);
         buyNewStocks.setToolTipText("Add a new Stock.");
-        buttonsPane.add(buyNewStocks);
+        right.add(buyNewStocks);
 
-        bottomMenuPane.add(buttonsPane, BorderLayout.LINE_START);
+        bottomMenuPane.add(left, BorderLayout.LINE_START);
+        bottomMenuPane.add(right, BorderLayout.LINE_END);
 
         add(bottomMenuPane, BorderLayout.PAGE_END);
     }
@@ -117,73 +122,17 @@ public class StockTable extends JPanel implements Observer, IStockTable {
             }
         });
 
-        //formatting cells to 2dp for £ values
-        table.getColumnModel().getColumn(3).setCellRenderer(
-                new DefaultTableCellRenderer() {
+        formatCol(SharePriceField);
+        formatCol(intitalPriceField);
+        formatCol(TotalValueField);
 
-                    @Override
-                    public Component getTableCellRendererComponent(
-                            JTable table, Object value, boolean isSelected,
-                            boolean hasFocus, int row, int column) {
-
-                        setHorizontalAlignment(RIGHT);
-                        value = new DecimalFormat("#.00").format((double) value);
-                        return super.getTableCellRendererComponent(
-                                table, value, isSelected, hasFocus, row, column);
-
-                    }
-                }
-
-
-        );
-
-
-        //formatting cells to 2dp for £ values
-        table.getColumnModel().getColumn(4).setCellRenderer(
-                new DefaultTableCellRenderer() {
-
-                    @Override
-                    public Component getTableCellRendererComponent(
-                            JTable table, Object value, boolean isSelected,
-                            boolean hasFocus, int row, int column) {
-
-                        setHorizontalAlignment(RIGHT);
-                        value = new DecimalFormat("#.00").format((double) value);
-                        return super.getTableCellRendererComponent(
-                                table, value, isSelected, hasFocus, row, column);
-
-                    }
-                }
-
-
-        );
-
-        table.getColumnModel().getColumn(5).setCellRenderer(
-                new DefaultTableCellRenderer() {
-
-                    @Override
-                    public Component getTableCellRendererComponent(
-                            JTable table, Object value, boolean isSelected,
-                            boolean hasFocus, int row, int column) {
-
-                        setHorizontalAlignment(RIGHT);
-                        value = new DecimalFormat("#.00").format((double) value);
-                        return super.getTableCellRendererComponent(
-                                table, value, isSelected, hasFocus, row, column);
-
-                    }
-                }
-
-
-        );
-
-        table.getColumnModel().getColumn(0).setPreferredWidth(60);
-        table.getColumnModel().getColumn(1).setPreferredWidth(60);
-        table.getColumnModel().getColumn(2).setPreferredWidth(60);
-        table.getColumnModel().getColumn(3).setPreferredWidth(110);
-        table.getColumnModel().getColumn(4).setPreferredWidth(100);
-        table.getColumnModel().getColumn(5).setPreferredWidth(80);
-        table.getColumnModel().getColumn(6).setPreferredWidth(50);
+//        table.getColumnModel().getColumn(TickerField).setPreferredWidth(60);
+//        table.getColumnModel().getColumn(StockNameField).setPreferredWidth(60);
+//        table.getColumnModel().getColumn(NumSharesField).setPreferredWidth(60);
+//        table.getColumnModel().getColumn(SharePriceField).setPreferredWidth(110);
+//        table.getColumnModel().getColumn(intitalPriceField).setPreferredWidth(50);
+//        table.getColumnModel().getColumn(TotalValueField).setPreferredWidth(80);
+//        table.getColumnModel().getColumn(ProfitLoss).setPreferredWidth(50);
 
         table.setShowGrid(true);
         table.setDragEnabled(false);
@@ -197,14 +146,6 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     public void clearTable() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-    }
-
-    public void filterTable(String string) {
-        if (table != null) {
-            TableRowSorter<DefaultTableModel> rowFilter = new TableRowSorter<>((DefaultTableModel) table.getModel());
-            table.setRowSorter(rowFilter);
-            rowFilter.setRowFilter(RowFilter.regexFilter("(?i)" + string));
-        }
     }
 
     public IStock insertValues(String ticker) {
@@ -229,14 +170,13 @@ public class StockTable extends JPanel implements Observer, IStockTable {
             setTotalValueLabel(totalValueHoldings);
 
         } else if (arg.equals(ViewUpdateType.CREATION) || arg.equals(ViewUpdateType.DELETION)) {
-
+            
             clearTable();
             totalValueHoldings = 0.0;
             for (String ticker : portfolio.getStockTickers()) {
                 totalValueHoldings += insertValues(ticker).getValueOfHolding();
             }
             setTotalValueLabel(totalValueHoldings);
-            //TODO think of a smarter way to know what hasnt changed
         }
     }
 
@@ -259,7 +199,6 @@ public class StockTable extends JPanel implements Observer, IStockTable {
         return total;
     }
 
-//returns selected ticker in jtable, or null if unselected
     public String getSelectedTicker() {
         int selectedIndex = table.getSelectedRow();
         DefaultTableModel t = (DefaultTableModel) table.getModel();
@@ -269,12 +208,29 @@ public class StockTable extends JPanel implements Observer, IStockTable {
 
             return ticker;
         }
-
         return null;
     }
 
     private void setTotalValueLabel(Double totalValue){
         totalValueLabel.setText("Total Value: £" +String.format("%.02f", totalValue));
+    }
+
+    private void formatCol(int col){
+        table.getColumnModel().getColumn(col).setCellRenderer(
+                new DefaultTableCellRenderer() {
+
+                    @Override
+                    public Component getTableCellRendererComponent(
+                            JTable table, Object value, boolean isSelected,
+                            boolean hasFocus, int row, int column) {
+
+                        setHorizontalAlignment(RIGHT);
+                        value = new DecimalFormat("#.00").format((double) value);
+                        return super.getTableCellRendererComponent(
+                                table, value, isSelected, hasFocus, row, column);
+                    }
+                }
+        );
     }
 
     @Override
