@@ -37,7 +37,8 @@ public class PortfolioListener implements ActionListener {
                 case "Open Folio From File":
                     if(lock.tryLock()){
                         try{
-                            model.loadPortfolioFromFile();
+                            String fileLoadName = JOptionPane.showInputDialog("Enter Filename: ");
+                            model.loadPortfolioFromFile(fileLoadName);
                         }finally {
                             lock.unlock();
                         }
@@ -46,7 +47,8 @@ public class PortfolioListener implements ActionListener {
                     }
                     break;
                 case "Save Folios":
-                    model.savePortfolios(JOptionPane.showInputDialog("Enter Filename: "));
+                    String fileName = JOptionPane.showInputDialog("Enter Filename: ");
+                    model.savePortfolios(fileName);
                     break;
                 case "Delete Folio":
                     delete();

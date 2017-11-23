@@ -16,6 +16,7 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     public PortfolioTracker() {
         portfolioList = new HashMap<>();
         prices = new Prices();
+        this.fileName = fileName;
       //   populate();
         Thread thread = new Thread(() -> {
             while(true) {
@@ -97,7 +98,7 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
 
 
     @Override
-    public Boolean loadPortfolioFromFile() {
+    public Boolean loadPortfolioFromFile(String fileName) {
         try {
             FileInputStream fileIn = new FileInputStream(fileName);
             ObjectInputStream in = new ObjectInputStream(fileIn);

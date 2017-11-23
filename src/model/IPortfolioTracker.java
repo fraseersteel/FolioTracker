@@ -18,7 +18,7 @@ public interface IPortfolioTracker {
 
     Boolean savePortfolios(String fileName);
 
-    Boolean loadPortfolioFromFile();
+    Boolean loadPortfolioFromFile(String fileName);
 
     Boolean addObserverToFolio(String name, Observer observer);
 
