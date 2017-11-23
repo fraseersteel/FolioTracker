@@ -2,6 +2,7 @@ package model;
 
 import view.StockTable;
 
+import java.io.File;
 import java.util.List;
 import java.util.Observer;
 import java.util.Set;
@@ -16,9 +17,9 @@ public interface IPortfolioTracker {
 
     Boolean createPortfolio(String name);
 
-    Boolean savePortfolios(String fileName);
+    Boolean savePortfolios(File file);
 
-    Boolean loadPortfolioFromFile(String fileName);
+    Boolean loadPortfolioFromFile(File file);
 
     Boolean addObserverToFolio(String name, Observer observer);
 

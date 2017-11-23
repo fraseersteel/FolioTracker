@@ -10,13 +10,11 @@ import java.util.*;
 public class PortfolioTracker extends Observable implements IPortfolioTracker {
 
     private Map<String, Portfolio> portfolioList;
-    private String fileName;
     private Prices prices;
 
     public PortfolioTracker() {
         portfolioList = new HashMap<>();
         prices = new Prices();
-        this.fileName = fileName;
       //   populate();
         startRefresher();
     }
@@ -86,16 +84,19 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     }
 
     @Override
-    public Boolean savePortfolios(String fileName) {
+    public Boolean savePortfolios(File file) {
             try {
-                FileOutputStream outPut = new FileOutputStream(fileName);
+                String saveFileName = file.getName();
+                System.setProperty("user.dir",file.getAbsolutePath());
+
+                FileOutputStream outPut = new FileOutputStream(file);
                 ObjectOutputStream out = new ObjectOutputStream(outPut);
                 for (Portfolio portfolio : portfolioList.values()) {
                     out.writeObject(portfolio);
                 }
                 out.close();
                 outPut.close();
-                System.out.println("Data is saved in: " + fileName);
+                System.out.println("Data is saved in: " + file.getName());
                 return true;
             } catch (IOException i) {
                 i.printStackTrace();
@@ -105,10 +106,11 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
 
 
     @Override
-    public Boolean loadPortfolioFromFile(String fileName) {
+    public Boolean loadPortfolioFromFile(File file) {
+        System.setProperty("user.dir", file.getAbsolutePath());
         int portfoliosBefore = portfolioList.values().size();
         try {
-            FileInputStream fileIn = new FileInputStream(fileName);
+            FileInputStream fileIn = new FileInputStream(file);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             try {
                 Object inputObject = null;
