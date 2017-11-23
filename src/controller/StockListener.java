@@ -51,7 +51,7 @@ public class StockListener implements ActionListener, TableModelListener {
                     action, JOptionPane.OK_CANCEL_OPTION);
 
             if (result == JOptionPane.OK_OPTION) {
-                doAction(action, ticker);
+                validateInput(action, ticker);
             } else {
                 passed = true;
             }
@@ -59,20 +59,20 @@ public class StockListener implements ActionListener, TableModelListener {
         passed = false;
     }
 
-    private void doAction(String action, String ticker){
+    private void validateInput(String action, String ticker){
         try{
             int i = Integer.parseInt(sharesAmountField.getText());
             if (i > 1000000000 || i < 1) {
                 displayError("Please enter a number within the range 1 to 1000000000.");
             }else{
-                doT(action, ticker, i);
+                startBackGroundWork(action, ticker, i);
             }
         }catch (NumberFormatException err){
             displayError("Please enter a number for the number of shares.");
         }
     }
 
-    private void doT(String action, String ticker, int i){
+    private void startBackGroundWork(String action, String ticker, int i){
 
         SwingWorker<Boolean,Void> worker = new SwingWorker<Boolean, Void>()
         {

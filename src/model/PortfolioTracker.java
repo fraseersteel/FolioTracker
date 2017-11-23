@@ -59,8 +59,10 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
             portfolioList.remove(name);
             setChanged();
             notifyObservers(ViewUpdateType.DELETION);
+            assert !portfolioList.containsKey(name): "Looking for:" + name + " in " + portfolioList.keySet();
             return true;
         }
+        assert !portfolioList.containsKey(name): "Looking for:" + name + " in " + portfolioList.keySet();
         return false;
     }
 
@@ -70,8 +72,10 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
             createAndAdd(name);
             setChanged();
             notifyObservers(ViewUpdateType.CREATION);
+            assert portfolioList.containsKey(name): "Looking for:" + name + " in " + portfolioList.keySet();
             return true;
         }
+        assert portfolioList.containsKey(name): "Looking for:" + name + " in " + portfolioList.keySet();
         return false;
     }
 

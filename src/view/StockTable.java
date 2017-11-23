@@ -1,5 +1,3 @@
-
-//todo this class could store a reference to the portfolio it is based off.
 package view;
 
 import controller.StockListener;
@@ -56,35 +54,32 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     }
 
     private void setupNorthMenu() {
+        JPanel north = new JPanel();
         totalValueLabel = new JLabel("");
-        add(totalValueLabel, BorderLayout.PAGE_END);
+        north.add(totalValueLabel, BorderLayout.EAST);
+
+        add(north, BorderLayout.PAGE_START);
     }
 
 
     private void setupSouthMenu() {
         JPanel bottomMenuPane = new JPanel(new BorderLayout());
-        JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
+//        JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         ActionListener listener = new StockListener(portfolio, this);
-
-
 
         JPanel left = new JPanel();
         JPanel right = new JPanel();
 
-        JButton buyStocks = new JButton("Buy Shares");
-        buyStocks.addActionListener(listener);
-        buyStocks.setToolTipText("Buy shares for unowned stocks, or purchase additional shares of highlighted stock");
-        left.add(buyStocks);
+        JButton buyShares = new JButton("Buy Shares");
+        buyShares.addActionListener(listener);
+        buyShares.setToolTipText("Buy shares for unowned stocks, or purchase additional shares of highlighted stock");
+        left.add(buyShares);
 
-        JButton sellStocks = new JButton("Sell Shares");
-        sellStocks.addActionListener(listener);
-        sellStocks.setToolTipText("Sell shares of the currently selected stock.");
-        left.add(sellStocks);
-
-
-
-
+        JButton sellShares = new JButton("Sell Shares");
+        sellShares.addActionListener(listener);
+        sellShares.setToolTipText("Sell shares of the currently selected stock.");
+        left.add(sellShares);
 
         JButton buyNewStocks = new JButton("Add Stock");
         buyNewStocks.addActionListener(listener);
@@ -131,13 +126,13 @@ public class StockTable extends JPanel implements Observer, IStockTable {
         formatCol(intitalPriceField);
         formatCol(TotalValueField);
 
-        table.getColumnModel().getColumn(TickerField).setPreferredWidth(60);
-        table.getColumnModel().getColumn(StockNameField).setPreferredWidth(60);
-        table.getColumnModel().getColumn(NumSharesField).setPreferredWidth(60);
-        table.getColumnModel().getColumn(SharePriceField).setPreferredWidth(110);
-        table.getColumnModel().getColumn(intitalPriceField).setPreferredWidth(50);
-        table.getColumnModel().getColumn(TotalValueField).setPreferredWidth(80);
-        table.getColumnModel().getColumn(ProfitLoss).setPreferredWidth(50);
+//        table.getColumnModel().getColumn(TickerField).setPreferredWidth(60);
+//        table.getColumnModel().getColumn(StockNameField).setPreferredWidth(60);
+//        table.getColumnModel().getColumn(NumSharesField).setPreferredWidth(60);
+//        table.getColumnModel().getColumn(SharePriceField).setPreferredWidth(110);
+//        table.getColumnModel().getColumn(intitalPriceField).setPreferredWidth(50);
+//        table.getColumnModel().getColumn(TotalValueField).setPreferredWidth(80);
+//        table.getColumnModel().getColumn(ProfitLoss).setPreferredWidth(50);
 
         table.setShowGrid(true);
         table.setDragEnabled(false);
@@ -151,14 +146,6 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     public void clearTable() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-    }
-
-    public void filterTable(String string) {
-        if (table != null) {
-            TableRowSorter<DefaultTableModel> rowFilter = new TableRowSorter<>((DefaultTableModel) table.getModel());
-            table.setRowSorter(rowFilter);
-            rowFilter.setRowFilter(RowFilter.regexFilter("(?i)" + string));
-        }
     }
 
     public IStock insertValues(String ticker) {
@@ -183,6 +170,7 @@ public class StockTable extends JPanel implements Observer, IStockTable {
             setTotalValueLabel(totalValueHoldings);
 
         } else if (arg.equals(ViewUpdateType.CREATION) || arg.equals(ViewUpdateType.DELETION)) {
+            
             clearTable();
             totalValueHoldings = 0.0;
             for (String ticker : portfolio.getStockTickers()) {

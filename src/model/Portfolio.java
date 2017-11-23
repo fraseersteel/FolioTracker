@@ -17,13 +17,13 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
         stockMap = new HashMap<>();
     }
 
-    public Portfolio(IPortfolio portfolio){
-        this.folioName = portfolio.getPortfolioName();
-        stockMap = new HashMap<>();
-        for(String s : getStockTickers()){
-            stockMap.put(s, (Stock) portfolio.getStockByTicker(s));
-        }
-    }
+//    public Portfolio(IPortfolio portfolio){
+//        this.folioName = portfolio.getPortfolioName();
+//        stockMap = new HashMap<>();
+//        for(String s : getStockTickers()){
+//            stockMap.put(s, (Stock) portfolio.getStockByTicker(s));
+//        }
+//    }
 
     @Override
     public String getPortfolioName() {

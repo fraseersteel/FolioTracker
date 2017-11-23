@@ -5,6 +5,7 @@ import model.IPortfolio;
 import model.IPortfolioTracker;
 import model.Prices;
 import model.ViewUpdateType;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 //import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -16,17 +17,17 @@ import java.util.List;
 
 public class FolioFrame extends JFrame implements Observer, IFolioFrame {
 
-    private JPanel contentpane;
+//    private JPanel contentpane;
     private JTabbedPane tabbedPane;
 
     private IPortfolioTracker portfolioTracker;
-
-    private Map<String, StockTable> profiles = new HashMap<String, StockTable>();
+    private Set<String> hiddenFolios = new HashSet<>();
+    private Map<String, StockTable> profiles = new HashMap<>();
 
     public FolioFrame(IPortfolioTracker portfolioTracker){
         this.portfolioTracker = portfolioTracker;
-        contentpane = new JPanel();
-        setContentPane(contentpane);
+//        contentpane = new JPanel();
+//        setContentPane(contentpane);
         setupFrame();
         setupMenuBar();
         setupComponents();
@@ -40,8 +41,14 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
         setLayout(new GridLayout(1, 1));
         setTitle("FolioTracker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(900, 550));
-        pack();
+        Dimension SCREEN_DIMENSION = Toolkit.getDefaultToolkit().getScreenSize();
+        int frameWidth = 900;
+        int frameHeight = 550;
+
+        int frameX = SCREEN_DIMENSION.width / 2 - frameWidth / 2;
+        int frameY = SCREEN_DIMENSION.height / 2 - frameHeight / 2;
+        setBounds(frameX, frameY, frameWidth, frameHeight);
+//        pack();
         setVisible(true);
     }
 
@@ -65,16 +72,26 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
         menuBar.add(file);
 
         ActionListener listener = new PortfolioListener(portfolioTracker, this);
-        JMenuItem open = new JMenuItem("Open Folio From File");
-        open.addActionListener(listener);
-        file.add(open);
+        JMenuItem load = new JMenuItem("Load Folio From File");
+        load.addActionListener(listener);
+        file.add(load);
 
         JMenuItem save = new JMenuItem("Save Folios");
         save.addActionListener(listener);
         file.add(save);
 
-        JMenu edit = new JMenu("Folio");
+        JMenu edit = new JMenu("Folio Actions");
         menuBar.add(edit);
+
+        JMenuItem open = new JMenuItem("Open");
+        open.addActionListener(listener);
+        edit.add(open);
+
+        JMenuItem hide = new JMenuItem("Hide");
+        hide.addActionListener(listener);
+        edit.add(hide);
+
+        edit.addSeparator();
 
         JMenuItem newFolio = new JMenuItem("New");
         newFolio.addActionListener(listener);
@@ -105,11 +122,14 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
             }
 
         } else if (ViewUpdateType.CREATION.equals(arg)) {
+            refreshFolioTabs();
+        }
+    }
 
-            for(String name : portfolioTracker.getPortfolioNames()){
-                if(!profiles.containsKey(name)){
-                    insertProfile(name);
-                }
+    private void refreshFolioTabs(){
+        for(String name : portfolioTracker.getPortfolioNames()){
+            if(!profiles.containsKey(name) && !hiddenFolios.contains(name)){
+                insertProfile(name);
             }
         }
     }
@@ -122,5 +142,28 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
             return tabbedPane.getTitleAt(i);
         }
         return null;
+    }
+
+    @Override
+    public boolean hideSelectedFolio() {
+        int i = tabbedPane.getSelectedIndex();
+        if(i != -1){
+            String name = tabbedPane.getTitleAt(i);
+            hiddenFolios.add(name);
+            tabbedPane.removeTabAt(i);
+            profiles.remove(name);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean showFolio(String name){
+        if(hiddenFolios.contains(name)){
+            hiddenFolios.remove(name);
+            refreshFolioTabs();
+            return true;
+        }
+        return false;
     }
 }

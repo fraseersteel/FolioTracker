@@ -31,12 +31,20 @@ public class PortfolioListener implements ActionListener {
             case "New":
                 newFolio();
                 break;
-            case "Open Folio From File":
+            case "Load Folio From File":
                 //TODO loading screen
                 Boolean b = model.loadPortfolioFromFile();
                 //TODO stop loading screen
                 if(!b){
                     displayError("Error loading Folios\n Please Make sure the file exists and is not empty.");
+                }
+                break;
+            case "Open":
+                open();
+                break;
+            case "Hide":
+                if(!view.hideSelectedFolio()){
+                    displayError("Error Hiding Folio\n Please select a folio to hide.");
                 }
                 break;
             case "Save Folios":
@@ -48,6 +56,22 @@ public class PortfolioListener implements ActionListener {
             case "Exit":
                 System.exit(0);
                 break;
+        }
+    }
+
+    private void open(){
+        int result = JOptionPane.showConfirmDialog(null, getPanel(),
+                "Delete Selected Folio", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String name = folioNameField.getText();
+            if(name == null || name.equals("")){
+                displayError("Error opening Folio\n Please enter a name.");
+            }else if(model.getPortfolioByName(name) == null){
+                displayError("Error opening Folio\n Folio does not exist.");
+            }else if(!view.showFolio(folioNameField.getText())){
+                displayError("Error opening Folio\n Folio is already showing with that name.");
+            }
         }
     }
 
