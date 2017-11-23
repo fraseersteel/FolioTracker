@@ -1,5 +1,6 @@
 package controller;
 
+import com.sun.codemodel.internal.JOp;
 import model.IPortfolio;
 import model.IPortfolioTracker;
 import view.IFolioFrame;
@@ -33,7 +34,8 @@ public class PortfolioListener implements ActionListener {
                 break;
             case "Load Folio From File":
                 //TODO loading screen
-                Boolean b = model.loadPortfolioFromFile();
+                String loadInput = JOptionPane.showInputDialog("Enter the filename for loading: ");
+                Boolean b = model.loadPortfolioFromFile(loadInput);
                 //TODO stop loading screen
                 if(!b){
                     displayError("Error loading Folios\n Please Make sure the file exists and is not empty.");
@@ -48,7 +50,8 @@ public class PortfolioListener implements ActionListener {
                 }
                 break;
             case "Save Folios":
-                model.savePortfolios();
+                String saveInput = JOptionPane.showInputDialog("Enter file name for saving: ");
+                model.savePortfolios(saveInput);
                 break;
             case "Delete":
                 delete();
