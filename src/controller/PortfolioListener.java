@@ -1,6 +1,5 @@
 package controller;
 
-import com.sun.codemodel.internal.JOp;
 import model.IPortfolio;
 import model.IPortfolioTracker;
 import view.IFolioFrame;
@@ -9,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -18,6 +18,7 @@ public class PortfolioListener implements ActionListener {
     private IFolioFrame view;
 
     private JTextField folioNameField = new JTextField(15);
+    private JFileChooser fc = new JFileChooser();
 
     public PortfolioListener(IPortfolioTracker model,IFolioFrame view) {
         this.view = view;
@@ -34,12 +35,15 @@ public class PortfolioListener implements ActionListener {
                 break;
             case "Load Folio From File":
                 //TODO loading screen
-                String loadInput = JOptionPane.showInputDialog("Enter the filename for loading: ");
-                Boolean b = model.loadPortfolioFromFile(loadInput);
-                //TODO stop loading screen
-                if(!b){
-                    displayError("Error loading Folios\n Please Make sure the file exists and is not empty.");
+                int result = fc.showOpenDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File fileLoad = fc.getSelectedFile();
+                    Boolean b = model.loadPortfolioFromFile(fileLoad);
+                    if(!b){
+                        displayError("Error loading Folios\n Please Make sure the file exists and is not empty.");
+                    }
                 }
+                //TODO stop loading screen
                 break;
             case "Open":
                 open();
@@ -50,8 +54,14 @@ public class PortfolioListener implements ActionListener {
                 }
                 break;
             case "Save Folios":
-                String saveInput = JOptionPane.showInputDialog("Enter file name for saving: ");
-                model.savePortfolios(saveInput);
+                int result2 = fc.showSaveDialog(null);
+                if (result2 == JFileChooser.APPROVE_OPTION) {
+                    File fileSave = fc.getSelectedFile();
+                    Boolean b = model.savePortfolios(fileSave);
+                    if(!b){
+                        displayError("Error loading Folios\n Please Make sure the file exists and is not empty.");
+                    }
+                }
                 break;
             case "Delete":
                 delete();
