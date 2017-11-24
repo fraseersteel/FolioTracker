@@ -37,7 +37,16 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
 
     @Override
     public IStock getStockByTicker(String name) {
-        return stockMap.get(name);
+        return new Stock(stockMap.get(name));
+    }
+
+    @Override
+    public Boolean setNameOfStock(String ticker, String newName) {
+        if(stockMap.containsKey(ticker)){
+            stockMap.get(ticker).setStockName(newName);
+            return true;
+        }
+        return false;
     }
 
     public Boolean sellStock(String tickerSymbol, int numOfShares){

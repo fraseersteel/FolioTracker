@@ -22,12 +22,12 @@ public class Stock implements IStock,Serializable {
         initialPrice = getPricePerShare();
     }
 
-//    public Stock(Stock stock){
-//        this.ticketSymbol = stock.getTickerSymbol();
-//        this.stockName = stock.getStockName();
-//        this.numShares = stock.getNumShares();
-//        initialPrice = stock.getInitalPricePerShare();
-//    }
+    public Stock(Stock stock){
+        this.ticketSymbol = stock.getTickerSymbol();
+        this.stockName = stock.getStockName();
+        this.numShares = stock.getNumShares();
+        initialPrice = stock.getInitalPricePerShare();
+    }
 
     public String getTickerSymbol() {
         return new String(ticketSymbol);
@@ -57,7 +57,6 @@ public class Stock implements IStock,Serializable {
         return (getValueOfHolding()-(numShares*initialPrice));
     }
 
-    @Override
     public void setStockName(String stockName) { this.stockName = stockName; }
 
     public void buyShares(int numShares){

@@ -15,11 +15,9 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     public PortfolioTracker() {
         portfolioList = new HashMap<>();
         prices = new Prices();
-      //   populate();
-        startRefresher();
     }
 
-    private void startRefresher(){
+    public void startRefresher(){
         Thread thread = new Thread(() -> {
             while(true) {
                 prices.refresh();
@@ -64,9 +62,11 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
             setChanged();
             notifyObservers(ViewUpdateType.DELETION);
             assert !portfolioList.containsKey(name): "Looking for:" + name + " in " + portfolioList.keySet();
+            System.out.println("profile found and now gone " + name);
             return true;
         }
         assert !portfolioList.containsKey(name): "Looking for:" + name + " in " + portfolioList.keySet();
+        System.out.println("profile not found " + name);
         return false;
     }
 
@@ -86,11 +86,11 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
     @Override
     public Boolean savePortfolios(File file) {
             try {
-                String saveFileName = file.getName();
                 System.setProperty("user.dir",file.getAbsolutePath());
 
                 FileOutputStream outPut = new FileOutputStream(file);
                 ObjectOutputStream out = new ObjectOutputStream(outPut);
+                out.writeObject(prices.getCurrentPriceList());
                 for (Portfolio portfolio : portfolioList.values()) {
                     out.writeObject(portfolio);
                 }
@@ -117,9 +117,17 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
                 while (true) {
                     System.out.println("Reading: ");
                     inputObject = in.readObject();
-                    portfolioList.put(((Portfolio) inputObject).getPortfolioName(), (Portfolio) inputObject);
+                    if(inputObject instanceof Map){
+                        System.out.println("Found Prices");
+                        this.prices = new Prices((Map<String, Double>) inputObject);
+                        System.out.println("Put all: " + inputObject);
+                    }else if(inputObject instanceof Portfolio){
+                        portfolioList.put(((Portfolio) inputObject).getPortfolioName(), (Portfolio) inputObject);
+                    }else{
+                        return false;
+                    }
                 }
-            } catch (ClassNotFoundException | EOFException e) {
+            } catch (EOFException e) {
                 System.out.println("Exception: ");
                 in.close();
                 fileIn.close();
@@ -135,6 +143,8 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
                 setChanged();
                 notifyObservers(ViewUpdateType.CREATION);
                 return true;
+            } catch (ClassNotFoundException e) {
+                return false;
             }
         } catch (IOException e) {
             return false;

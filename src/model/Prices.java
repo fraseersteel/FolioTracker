@@ -12,10 +12,16 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Prices extends Observable implements Serializable{
 
+    private static final long serialVersionUID = 64L;
+
     private static Map<String, Double> mostRecentPrices = new ConcurrentHashMap<>();
     private static Lock lock = new ReentrantLock();
 
     public Prices(){}
+
+    public Prices(Map<String, Double> mostRecentPrices){
+        this.mostRecentPrices.putAll(mostRecentPrices);
+    }
 
     public static boolean addTicker(String ticker){
         try {
@@ -28,9 +34,17 @@ public class Prices extends Observable implements Serializable{
         }
     }
 
+    public Map<String, Double> getCurrentPriceList(){
+        Map<String, Double> encapsMap = new HashMap<>();
+        for(String key : mostRecentPrices.keySet()){
+            encapsMap.put(new String(key), new Double(mostRecentPrices.get(key)));
+        }
+        return encapsMap;
+    }
+
     public static Double getPriceOfTicker(String ticker){
         if(mostRecentPrices.containsKey(ticker)){
-            return new Double(mostRecentPrices.get(ticker));
+            return mostRecentPrices.get(ticker);
         }
         return null;
     }

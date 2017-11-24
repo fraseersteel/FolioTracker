@@ -9,7 +9,9 @@ public interface IPortfolio {
 
     Set<String> getStockTickers();
 
-    IStock getStockByTicker(String ticker);
+    Boolean setNameOfStock(String ticker, String newName);
+
+    IStock getStockByTicker(String name);
 
     Boolean buyStock(String tickerSymbol, int numOfShares);
 

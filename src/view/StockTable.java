@@ -27,27 +27,28 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     private static final int TotalValueField = 5;
     private static final int ProfitLoss = 6;
 
-    private double totalValueHoldings = 0.0;
-
     private IPortfolio portfolio;
     private JTable table;
     private JLabel totalValueLabel;
+    private JTextField tickerField = new JTextField(15);
 
-
-    public StockTable(IPortfolio portfolio) {
+    public StockTable(IPortfolio portfolio, IFolioFrame folioFrame) {
         this.portfolio = portfolio;
         setLayout(new BorderLayout());
 
+        ActionListener listener = new StockListener(folioFrame, portfolio, this);
+        TableModelListener modelListener = new StockListener(folioFrame, portfolio, this);
+
         setupNorthMenu();
-        setupSouthMenu();
+        setupSouthMenu(listener);
 
         CustomScrollPane scrollPane = new CustomScrollPane("Stocks");
         add(scrollPane, BorderLayout.CENTER);
         setupTable();
         scrollPane.setViewportView(table);
 
-        table.getModel().addTableModelListener(new StockListener(portfolio, this));
-        setTotalValueLabel(totalValueHoldings);
+        table.getModel().addTableModelListener(modelListener);
+        setTotalValueLabel(0.0);
         for (String ticker : portfolio.getStockTickers()) {
             insertValues(ticker);
         }
@@ -62,11 +63,8 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     }
 
 
-    private void setupSouthMenu() {
+    private void setupSouthMenu(ActionListener listener) {
         JPanel bottomMenuPane = new JPanel(new BorderLayout());
-//        JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
-        ActionListener listener = new StockListener(portfolio, this);
 
         JPanel left = new JPanel();
         JPanel right = new JPanel();
@@ -161,18 +159,16 @@ public class StockTable extends JPanel implements Observer, IStockTable {
     public void update(Observable o, Object arg) {
         if (arg.equals(ViewUpdateType.STOCKPRICE)) {
 
-            totalValueHoldings = updateField(SharePriceField);
-            setTotalValueLabel(totalValueHoldings);
+            setTotalValueLabel(updateField(SharePriceField));
 
         } else if (arg.equals(ViewUpdateType.NUMBEROFSHARES)) {
 
-            totalValueHoldings = updateField(NumSharesField);
-            setTotalValueLabel(totalValueHoldings);
+            setTotalValueLabel(updateField(NumSharesField));
 
         } else if (arg.equals(ViewUpdateType.CREATION) || arg.equals(ViewUpdateType.DELETION)) {
             
             clearTable();
-            totalValueHoldings = 0.0;
+            double totalValueHoldings = 0.0;
             for (String ticker : portfolio.getStockTickers()) {
                 totalValueHoldings += insertValues(ticker).getValueOfHolding();
             }
@@ -231,6 +227,39 @@ public class StockTable extends JPanel implements Observer, IStockTable {
                     }
                 }
         );
+    }
+
+    @Override
+    public String displayOption(String message, boolean showWithTickerField) {
+        JPanel myPanel = new JPanel();
+        GridLayout gridLayout;
+
+        if (showWithTickerField) {
+            gridLayout = new GridLayout(2, 2);
+            myPanel.add(new JLabel("Ticker:"));
+            myPanel.add(tickerField);
+        } else {
+            gridLayout = new GridLayout(1, 2);
+        }
+        myPanel.setLayout(gridLayout);
+
+        myPanel.add(new JLabel("Number of shares:"));
+        JTextField sharesAmountField = new JTextField();
+        myPanel.add(sharesAmountField);
+
+        int i = JOptionPane.showConfirmDialog(this, myPanel,
+                message, JOptionPane.OK_CANCEL_OPTION);
+
+        if(i == JOptionPane.OK_OPTION){
+            return sharesAmountField.getText();
+        }else{
+            return "-2";
+        }
+    }
+
+    @Override
+    public String getTickerInput() {
+        return tickerField.getText();
     }
 
     @Override

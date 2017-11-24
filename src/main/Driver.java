@@ -15,5 +15,6 @@ public class Driver {
             FolioFrame folioFrame = new FolioFrame(model);
             model.addObserver(folioFrame);
         });
+        model.startRefresher();
     }
 }

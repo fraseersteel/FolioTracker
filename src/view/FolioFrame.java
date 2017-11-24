@@ -9,25 +9,25 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 //import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.event.ListDataListener;
 import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 
 public class FolioFrame extends JFrame implements Observer, IFolioFrame {
 
-//    private JPanel contentpane;
     private JTabbedPane tabbedPane;
+    private JDialog waitingScreen;
 
     private IPortfolioTracker portfolioTracker;
-    private Set<String> hiddenFolios = new HashSet<>();
+    private List<String> hiddenFolios = new ArrayList<>();
     private Map<String, StockTable> profiles = new HashMap<>();
 
     public FolioFrame(IPortfolioTracker portfolioTracker){
         this.portfolioTracker = portfolioTracker;
-//        contentpane = new JPanel();
-//        setContentPane(contentpane);
         setupFrame();
         setupMenuBar();
         setupComponents();
@@ -48,12 +48,11 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
         int frameX = SCREEN_DIMENSION.width / 2 - frameWidth / 2;
         int frameY = SCREEN_DIMENSION.height / 2 - frameHeight / 2;
         setBounds(frameX, frameY, frameWidth, frameHeight);
-//        pack();
         setVisible(true);
     }
 
     private void insertProfile(String name){
-        StockTable table = new StockTable(portfolioTracker.getPortfolioByName(name));
+        StockTable table = new StockTable(portfolioTracker.getPortfolioByName(name), this);
         portfolioTracker.addObserverToFolio(name, table);
         portfolioTracker.addObserverToPrices(table);
         profiles.put(name, table);
@@ -165,5 +164,112 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void displayError(String message) {
+        JOptionPane.showMessageDialog(
+                this,
+                message,
+                "Try again",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    @Override
+    public void showLoadingScreen(String msg) {
+        waitingScreen = new JDialog(this, "Busy", Dialog.ModalityType.APPLICATION_MODAL);
+        waitingScreen.setBounds(getX(), getY(), 441, 300);
+        waitingScreen.setContentPane(buildLoadingScreen(msg));
+        waitingScreen.setUndecorated(true);
+        waitingScreen.setVisible(true);
+    }
+
+    private JPanel buildLoadingScreen(String msg){
+        ImageIcon img = new ImageIcon(getClass().getClassLoader().getResource("resources/Loading_icon.gif"));
+        JLabel lblTitle = new JLabel(img);
+        lblTitle.setBounds(0, 0, 441, 291);
+        lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTitle.setVisible(true);
+        JLabel lblText = new JLabel(msg);
+        lblText.setFont(new java.awt.Font("Tahoma", Font.BOLD, 18));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(lblText, BorderLayout.NORTH);
+        panel.add(lblTitle, BorderLayout.CENTER);
+        return panel;
+    }
+
+    @Override
+    public void hideLoadingScreen() {
+        waitingScreen.dispose();
+    }
+
+    @Override
+    public String promptForString(String message) {
+        JPanel myPanel = new JPanel();
+        GridLayout gridLayout = new GridLayout(2, 2);
+        myPanel.add(new JLabel(message));
+        JTextField nameField = new JTextField(15);
+        myPanel.add(nameField);
+
+        int i = JOptionPane.showConfirmDialog(this, myPanel,
+                message, JOptionPane.OK_CANCEL_OPTION);
+
+        if(i == JOptionPane.OK_OPTION) {
+            return nameField.getText();
+        }
+        return null;
+    }
+
+    @Override
+    public void promptFolioToShow() {
+
+        JPanel myPanel = new JPanel();
+        if(hiddenFolios.size() == 0){
+            displayError("There are no hidden folios to show.");
+        }else{
+            myPanel.add(new JLabel("Folio To Show:"));
+            String[] fields = new String[hiddenFolios.size()];
+            for(int i = 0; i < hiddenFolios.size(); i++){
+                fields[i] = hiddenFolios.get(i);
+            }
+            JComboBox<String> comp = new JComboBox<>(fields);
+            myPanel.add(comp);
+
+
+            int i = JOptionPane.showConfirmDialog(this, myPanel,
+                    "Show Folio", JOptionPane.OK_CANCEL_OPTION);
+
+            if(i == JOptionPane.OK_OPTION){
+                if(hiddenFolios.size() != 0){
+                    this.showFolio((String) comp.getSelectedItem());
+                }
+
+            }
+        }
+    }
+
+    @Override
+    public boolean promptConfirmation(String title, String message) {
+        int result = JOptionPane.showConfirmDialog(null, message,
+                title, JOptionPane.OK_CANCEL_OPTION);
+
+        return result == JOptionPane.OK_OPTION;
+    }
+
+    @Override
+    public File promptFileChooser(boolean load) {
+        JFileChooser fc = new JFileChooser();
+        int result;
+        if(load){
+            result = fc.showOpenDialog(this);
+        }else{
+            result = fc.showSaveDialog(this);
+        }
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return fc.getSelectedFile();
+        }
+        return null;
     }
 }
