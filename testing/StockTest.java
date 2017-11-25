@@ -1,4 +1,4 @@
-package testing;
+
 
 import model.Portfolio;
 import model.Prices;
@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class StockTest {
@@ -44,6 +45,13 @@ public class StockTest {
 
     }
 
+//    @Test
+//    public void testOtherConstructor(){
+//        prices = null;
+//        Stock stock1 = new Stock("Bt","Name",10);
+//        Stock stock3 = new Stock(stock1);
+//        assertEquals("BT",stock3.getTickerSymbol());
+//    }
 
     @Test
     public void testGetPricePerShare(){
@@ -54,7 +62,8 @@ public class StockTest {
 
     @Test
     public void testInitialPricePerShare(){
-
+        Double price = 16.68;
+        assertEquals(price,stock.getInitalPricePerShare());
     }
 
     @Test
@@ -64,7 +73,14 @@ public class StockTest {
 
     @Test
     public void testGetStockName(){
+        assertEquals("BT",stock.getTickerSymbol());
+    }
 
+
+    @Test
+    public void testBuyShares(){
+        stock.buyShares(100);
+        assertEquals(15,stock.getNumShares());
     }
 
 }
