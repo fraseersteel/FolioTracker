@@ -50,42 +50,62 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
     }
 
     public Boolean sellStock(String tickerSymbol, int numOfShares){
+        Integer amountBefore = null;
+
+        Boolean isSuccessful = false;
         String ticker = tickerSymbol.toUpperCase();
         Stock stock = stockMap.get(ticker);
         if(stock != null){
+            assert (amountBefore = stock.getNumShares()) != null;
             if(numOfShares < stock.getNumShares()){
                 stock.sellShares(numOfShares);
                 setChanged();
                 notifyObservers(ViewUpdateType.NUMBEROFSHARES);
+                isSuccessful = true;
             }else if(numOfShares == stock.getNumShares()){
                 stockMap.remove(ticker);
                 setChanged();
                 notifyObservers(ViewUpdateType.DELETION);
+                isSuccessful = true;
             }else{
-                return null;
+                isSuccessful = null;
             }
-            return true;
+            assert checkSell(tickerSymbol, amountBefore, numOfShares);
         }
-        return false;
+        return isSuccessful;
+    }
+
+    private boolean checkSell(String ticker, int amountBefore, int amountToRemove){
+        if(stockMap.containsKey(ticker)){
+            int amountNow = stockMap.get(ticker).getNumShares();
+            return ((amountNow == (amountBefore-amountToRemove)) && amountNow > 0) || (amountNow == amountBefore && amountBefore < amountToRemove);
+        }else{
+            return amountBefore == amountToRemove;
+        }
     }
 
     public Boolean buyStock(String tickerSymbol, int numOfShares){
+        Boolean isSuccessful;
         String ticker = tickerSymbol.toUpperCase();
         Stock stock = stockMap.get(ticker);
         if(stock != null){
             stock.buyShares(numOfShares);
             setChanged();
             notifyObservers(ViewUpdateType.NUMBEROFSHARES);
-            return true;
+            isSuccessful = true;
+        }else{
+            isSuccessful =  createStock(ticker, numOfShares);
         }
-        return createStock(ticker, numOfShares);
+
+        return isSuccessful;
     }
 
     private Boolean createStock(String tickerSymbol, int numOfShares) {
-        String ticker = tickerSymbol.toUpperCase();
-        if(Prices.addTicker(ticker)){
-            Stock newStock = new Stock(ticker, ticker + "Name", numOfShares);
-            stockMap.put(ticker,newStock);
+        assert tickerSymbol != null;
+//        String ticker = tickerSymbol.toUpperCase();
+        if(Prices.addTicker(tickerSymbol)){
+            Stock newStock = new Stock(tickerSymbol, tickerSymbol + "Name", numOfShares);
+            stockMap.put(tickerSymbol,newStock);
             setChanged();
             notifyObservers(ViewUpdateType.CREATION);
             return true;

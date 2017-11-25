@@ -71,7 +71,7 @@ public class PortfolioListener implements ActionListener {
                     protected Boolean doInBackground() {
                         List<String> names = new ArrayList<>();
                         for(String name : model.getPortfolioNames()){
-                            System.out.println("deleteing " + name);
+                            System.out.println("deleting " + name);
                             names.add(name);
                         }
                         for(String name : names){

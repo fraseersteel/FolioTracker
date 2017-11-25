@@ -41,16 +41,19 @@ public class StockListener implements ActionListener, TableModelListener {
         }
         while(!passed) {
             String result = stockTable.displayOption(action, action.equals(ADD));
-
-            try{
-                int i = Integer.parseInt(result);
-                if (i > 1000000000 || i < 1) {
-                    folioFrame.displayError("Please enter a number within the range 1 to 1000000000.");
-                }else {
-                    startBackGroundWork(action, ticker, i);
+            if(!result.equals("-2")){
+                try{
+                    int i = Integer.parseInt(result);
+                    if (i > 1000000000 || i < 1) {
+                        folioFrame.displayError("Please enter a number within the range 1 to 1000000000.");
+                    }else {
+                        startBackGroundWork(action, ticker, i);
+                    }
+                }catch (NumberFormatException err){
+                    folioFrame.displayError("Please enter a number for the number of shares.");
                 }
-            }catch (NumberFormatException err){
-                folioFrame.displayError("Please enter a number for the number of shares.");
+            }else{
+                passed = true;
             }
         }
         passed = false;

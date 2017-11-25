@@ -178,7 +178,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
     @Override
     public void showLoadingScreen(String msg) {
         waitingScreen = new JDialog(this, "Busy", Dialog.ModalityType.APPLICATION_MODAL);
-        waitingScreen.setBounds(getX(), getY(), 441, 300);
+        waitingScreen.setBounds(getX()+(this.getWidth()/4), getY()+(this.getHeight()/4), 441, 300);
         waitingScreen.setContentPane(buildLoadingScreen(msg));
         waitingScreen.setUndecorated(true);
         waitingScreen.setVisible(true);
@@ -207,7 +207,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
     @Override
     public String promptForString(String message) {
         JPanel myPanel = new JPanel();
-        GridLayout gridLayout = new GridLayout(2, 2);
+//        GridLayout gridLayout = new GridLayout(2, 2);
         myPanel.add(new JLabel(message));
         JTextField nameField = new JTextField(15);
         myPanel.add(nameField);

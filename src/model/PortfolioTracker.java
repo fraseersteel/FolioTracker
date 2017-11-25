@@ -30,11 +30,11 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
         });
         thread.start();
     }
-
-    private void populate(){
-        createAndAdd("1test");
-        createAndAdd("2test");
-    }
+//
+//    private void populate(){
+//        createAndAdd("1test");
+//        createAndAdd("2test");
+//    }
 
     private void createAndAdd(String name){
         portfolioList.put(name, new Portfolio(name));
@@ -57,51 +57,54 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
 
     @Override
     public Boolean deletePortfolioByName(String name) {
+        boolean isSuccessful = false;
         if(portfolioList.containsKey(name)){
             portfolioList.remove(name);
             setChanged();
             notifyObservers(ViewUpdateType.DELETION);
-            assert !portfolioList.containsKey(name): "Looking for:" + name + " in " + portfolioList.keySet();
-            System.out.println("profile found and now gone " + name);
-            return true;
+            isSuccessful = true;
         }
         assert !portfolioList.containsKey(name): "Looking for:" + name + " in " + portfolioList.keySet();
-        System.out.println("profile not found " + name);
-        return false;
+        return isSuccessful;
     }
 
     @Override
     public Boolean createPortfolio(String name) {
+        boolean isSuccessful = false;
         if(!portfolioList.containsKey(name)){
             createAndAdd(name);
             setChanged();
             notifyObservers(ViewUpdateType.CREATION);
-            assert portfolioList.containsKey(name): "Looking for:" + name + " in " + portfolioList.keySet();
-            return true;
+            isSuccessful =  true;
         }
         assert portfolioList.containsKey(name): "Looking for:" + name + " in " + portfolioList.keySet();
-        return false;
+        return isSuccessful;
     }
 
     @Override
     public Boolean savePortfolios(File file) {
-            try {
-                System.setProperty("user.dir",file.getAbsolutePath());
+        Collection<Portfolio> portfolioBefore = null;
+        assert (portfolioBefore = new ArrayList<>()) != null;
+        assert (portfolioBefore.addAll(portfolioList.values()));
+        boolean isSuccessful = false;
+        try {
+            System.setProperty("user.dir",file.getAbsolutePath());
 
-                FileOutputStream outPut = new FileOutputStream(file);
-                ObjectOutputStream out = new ObjectOutputStream(outPut);
-                out.writeObject(prices.getCurrentPriceList());
-                for (Portfolio portfolio : portfolioList.values()) {
-                    out.writeObject(portfolio);
-                }
-                out.close();
-                outPut.close();
-                System.out.println("Data is saved in: " + file.getName());
-                return true;
-            } catch (IOException i) {
-                i.printStackTrace();
+            FileOutputStream outPut = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(outPut);
+            out.writeObject(prices.getCurrentPriceList());
+            for (Portfolio portfolio : portfolioList.values()) {
+                out.writeObject(portfolio);
             }
-        return false;
+            out.close();
+            outPut.close();
+            System.out.println("Data is saved in: " + file.getName());
+            isSuccessful = true;
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+        assert portfolioBefore.containsAll(portfolioList.values()): "portfoliosBefore:" + portfolioBefore + "\n portfoliosAfter:" + portfolioList.values();
+        return isSuccessful;
     }
 
 
@@ -113,14 +116,10 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
             FileInputStream fileIn = new FileInputStream(file);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             try {
-                Object inputObject = null;
                 while (true) {
-                    System.out.println("Reading: ");
-                    inputObject = in.readObject();
+                    Object inputObject = in.readObject();
                     if(inputObject instanceof Map){
-                        System.out.println("Found Prices");
                         this.prices = new Prices((Map<String, Double>) inputObject);
-                        System.out.println("Put all: " + inputObject);
                     }else if(inputObject instanceof Portfolio){
                         portfolioList.put(((Portfolio) inputObject).getPortfolioName(), (Portfolio) inputObject);
                     }else{
@@ -128,14 +127,12 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
                     }
                 }
             } catch (EOFException e) {
-                System.out.println("Exception: ");
                 in.close();
                 fileIn.close();
                 if(portfoliosBefore == portfolioList.values().size()){
                     return false;
                 }
                 for (Portfolio portfolio : portfolioList.values()) {
-                    System.out.println("loading folio: " + portfolio.getPortfolioName());
                     for(String name : portfolio.getStockTickers()){
                         Prices.addTicker(name);
                     }
