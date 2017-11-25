@@ -71,8 +71,6 @@ public class PortfolioTest {
 
     @Test
     public void testBuyNull() {
-       Stock stock;
-       stock = null;
        assertFalse(portfolio.buyStock("bt",100));
     }
 

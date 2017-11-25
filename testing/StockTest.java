@@ -47,7 +47,6 @@ public class StockTest {
 
 //    @Test
 //    public void testOtherConstructor(){
-//        prices = null;
 //        Stock stock1 = new Stock("Bt","Name",10);
 //        Stock stock3 = new Stock(stock1);
 //        assertEquals("BT",stock3.getTickerSymbol());
@@ -66,10 +65,6 @@ public class StockTest {
         assertEquals(price,stock.getInitalPricePerShare());
     }
 
-    @Test
-    public void testProfitOfHolding(){
-
-    }
 
     @Test
     public void testGetStockName(){
@@ -80,7 +75,20 @@ public class StockTest {
     @Test
     public void testBuyShares(){
         stock.buyShares(100);
-        assertEquals(15,stock.getNumShares());
+        assertEquals(105,stock.getNumShares());
+    }
+
+
+    @Test
+    public void testValueOfHolding(){
+        Double expect = 83.4;
+        assertEquals(expect,stock.getValueOfHolding());
+    }
+
+    @Test
+    public void testProfitOfHolding(){
+        Double expected = 0.00;
+        assertEquals(expected,stock.getProfitOfHolding());
     }
 
 }
