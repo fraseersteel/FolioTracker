@@ -18,13 +18,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 public class PortfolioTest {
 
@@ -46,7 +44,7 @@ public class PortfolioTest {
         Map<String, Double> somePrices = new HashMap<>();
         somePrices.put("BT", 16.68);
         somePrices.put("NKE", 15.12);
-
+        somePrices.put("A", 12.11);
         return somePrices;
     }
 
@@ -60,6 +58,7 @@ public class PortfolioTest {
         Map<String, Double> compare = new HashMap<>();
         compare.put("BT", 16.68);
         compare.put("NKE", 15.12);
+        compare.put("A", 12.11);
         assertEquals(compare, prices.getCurrentPriceList());
     }
 
@@ -71,6 +70,7 @@ public class PortfolioTest {
 
     @Test
     public void testBuyNull() {
+        // cant test this
        assertFalse(portfolio.buyStock("bt",100));
     }
 
@@ -93,19 +93,19 @@ public class PortfolioTest {
 
     @Test
     public void testSellStockLessToShares() {
-        portfolio.buyStock("bt", 100);
-        assertTrue(portfolio.sellStock("bt", 50));
+        portfolio.buyStock("BT", 100);
+        assertTrue(portfolio.sellStock("BT", 50));
     }
 
     @Test
     public void testSellMoreThanOwned() {
-        portfolio.buyStock("bt", 100);
-        assertFalse(portfolio.sellStock("bt", 200));
+        portfolio.buyStock("A", 100);
+        assertFalse(portfolio.sellStock("A", 200));
     }
 
     @Test
     public void noPortfolio() {
-        assertFalse(portfolio.sellStock("Doesnt Exist", 00));
+        assertNull(portfolio.sellStock("Doesnt Exist", 00));
     }
 
 

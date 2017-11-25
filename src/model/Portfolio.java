@@ -52,7 +52,7 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
     public Boolean sellStock(String tickerSymbol, int numOfShares){
         Integer amountBefore = null;
 
-        Boolean isSuccessful = false;
+        Boolean isSuccessful = null;
         String ticker = tickerSymbol.toUpperCase();
         Stock stock = stockMap.get(ticker);
         if(stock != null){
@@ -68,9 +68,11 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
                 notifyObservers(ViewUpdateType.DELETION);
                 isSuccessful = true;
             }else{
-                isSuccessful = null;
+                isSuccessful = false;
             }
-            assert checkSell(tickerSymbol, amountBefore, numOfShares);
+            boolean b =  checkSell(tickerSymbol, amountBefore, numOfShares);
+            System.out.println(b);
+            assert b: "amountBefore:" + amountBefore + " amountToSell:" + numOfShares;
         }
         return isSuccessful;
     }
@@ -78,8 +80,10 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
     private boolean checkSell(String ticker, int amountBefore, int amountToRemove){
         if(stockMap.containsKey(ticker)){
             int amountNow = stockMap.get(ticker).getNumShares();
-            return ((amountNow == (amountBefore-amountToRemove)) && amountNow > 0) || (amountNow == amountBefore && amountBefore < amountToRemove);
+            System.out.println("amountNow:" + amountNow);
+            return (amountNow == (amountBefore-amountToRemove) && amountNow > 0) || (amountNow == amountBefore && amountBefore < amountToRemove);
         }else{
+            System.out.println("got here");
             return amountBefore == amountToRemove;
         }
     }
