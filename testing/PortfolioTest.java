@@ -66,8 +66,8 @@ public class PortfolioTest {
 
     @Test
     public void testSetNameOfStock() {
-        portfolio.buyStock("BT", 100);
-        assertTrue(portfolio.setNameOfStock("BT", "bob"));
+        portfolio.buyStock("GOLD", 100);
+        assertTrue(portfolio.setNameOfStock("GOLD", "bob"));
     }
 
     @Test
@@ -87,8 +87,8 @@ public class PortfolioTest {
 
     @Test
     public void testSellStockEqualToShares() {
-        portfolio.buyStock("bt", 100);
-        assertTrue(portfolio.sellStock("bt", 100));
+        portfolio.buyStock("BT", 100);
+        assertTrue(portfolio.sellStock("BT", 100));
     }
 
     @Test
