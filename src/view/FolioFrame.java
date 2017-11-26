@@ -251,7 +251,7 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
 
     @Override
     public boolean promptConfirmation(String title, String message) {
-        int result = JOptionPane.showConfirmDialog(null, message,
+        int result = JOptionPane.showConfirmDialog(this, message,
                 title, JOptionPane.OK_CANCEL_OPTION);
 
         return result == JOptionPane.OK_OPTION;

@@ -1,5 +1,6 @@
 
 
+import QuoteServer.MockQuoteServer;
 import model.Portfolio;
 import model.Prices;
 import model.Stock;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 
@@ -21,17 +23,8 @@ public class StockTest {
 
     @Before
     public void setUp(){
-        prices = new Prices(getPricesMap());
-
+        prices = new Prices(new MockQuoteServer());
         stock = new Stock("BT","stock1",5);
-    }
-
-    private Map<String, Double> getPricesMap(){
-        Map<String, Double> somePrices = new HashMap<>();
-        somePrices.put("BT",16.68);
-        somePrices.put("NKE",15.12);
-
-        return somePrices;
     }
 
     @Test
@@ -61,7 +54,7 @@ public class StockTest {
 
     @Test
     public void testInitialPricePerShare(){
-        Double price = 16.68;
+        Double price = 12.34;
         assertEquals(price,stock.getInitalPricePerShare());
     }
 
@@ -81,7 +74,7 @@ public class StockTest {
 
     @Test
     public void testValueOfHolding(){
-        Double expect = 83.4;
+        Double expect = 61.7;
         assertEquals(expect,stock.getValueOfHolding());
     }
 
@@ -89,6 +82,68 @@ public class StockTest {
     public void testProfitOfHolding(){
         Double expected = 0.00;
         assertEquals(expected,stock.getProfitOfHolding());
+    }
+
+
+    @Test
+    public void testEqualsReflex() {
+        assertEquals(stock, stock);
+        assertEquals(stock.hashCode(), stock.hashCode());
+    }
+
+    @Test
+    public void testEqualsDifClass() {
+        assertNotEquals(stock, "");
+    }
+
+    @Test
+    public void testEqualsSymetric() {
+        Stock newStock = new Stock("BT", "stock1", 5);
+        assertEquals(stock, newStock);
+        assertEquals(newStock, stock);
+        assertEquals(stock.hashCode(), newStock.hashCode());
+    }
+
+    @Test
+    public void testEquals2() {
+        Stock newStock = new Stock("NKE", "stock1", 5);
+        assertNotEquals(stock, newStock);
+    }
+
+    @Test
+    public void testEquals3() {
+        Stock newStock = new Stock("BT", "stock2", 5);
+        assertNotEquals(stock, newStock);
+    }
+
+    @Test
+    public void testEquals4() {
+        Stock newStock = new Stock("BT", "stock1", 10);
+        assertNotEquals(stock, newStock);
+    }
+
+    @Test
+    public void testEqualsSTransitive() {
+        Stock newStock = new Stock("BT", "stock1", 5);
+        Stock newStock2 = new Stock("BT", "stock1", 5);
+        assertEquals(stock, newStock);
+        assertEquals(newStock, newStock2);
+        assertEquals(newStock2, stock);
+        assertEquals(stock.hashCode(), newStock.hashCode());
+        assertEquals(newStock2.hashCode(), newStock.hashCode());
+    }
+
+    @Test
+    public void testEqualsConsist() {
+        Stock newStock = new Stock("BT", "stock1", 5);
+        assertEquals(stock, newStock);
+        assertEquals(stock, newStock);
+        assertEquals(stock.hashCode(), newStock.hashCode());
+    }
+
+    @Test
+    public void testEqualsNull() {
+        assertNotEquals(null, stock);
     }
 
 }

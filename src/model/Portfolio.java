@@ -1,5 +1,6 @@
 package model;
 
+import javax.sound.sampled.Port;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -32,7 +33,9 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
 
     @Override
     public Set<String> getStockTickers() {
-        return stockMap.keySet();
+        Set<String> tickersCopy = new HashSet<>();
+        tickersCopy.addAll(stockMap.keySet());
+        return tickersCopy;
     }
 
     @Override
@@ -70,9 +73,7 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
             }else{
                 isSuccessful = false;
             }
-            boolean b =  checkSell(tickerSymbol, amountBefore, numOfShares);
-            System.out.println(b);
-            assert b: "amountBefore:" + amountBefore + " amountToSell:" + numOfShares;
+            assert checkSell(tickerSymbol, amountBefore, numOfShares): "amountBefore:" + amountBefore + " amountToSell:" + numOfShares;
         }
         return isSuccessful;
     }
@@ -106,7 +107,6 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
 
     private Boolean createStock(String tickerSymbol, int numOfShares) {
         assert tickerSymbol != null;
-//        String ticker = tickerSymbol.toUpperCase();
         if(Prices.addTicker(tickerSymbol)){
             Stock newStock = new Stock(tickerSymbol, tickerSymbol + "Name", numOfShares);
             stockMap.put(tickerSymbol,newStock);
@@ -115,5 +115,40 @@ public class Portfolio extends Observable implements IPortfolio, Serializable {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object object){
+        if(object instanceof Portfolio){
+            Portfolio other = (Portfolio) object;
+            if(!other.getPortfolioName().equals(folioName)){
+                return false;
+            }
+            Set<String> tickers = other.getStockTickers();
+            if(tickers.size() != stockMap.keySet().size()){
+                return false;
+            }
+            for(String name : tickers){
+                IStock stock = other.getStockByTicker(name);
+                if(!stockMap.containsKey(name)){
+                    return false;
+                }
+                if(!stockMap.get(name).equals(stock)){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode(){
+        int runningHash = 0;
+        runningHash += folioName.hashCode();
+        for(String name : stockMap.keySet()){
+            runningHash += stockMap.get(name).hashCode();
+        }
+        return runningHash;
     }
 }

@@ -62,7 +62,7 @@ public class PortfolioListener implements ActionListener {
     }
 
     private void load() {
-        boolean continueLoad = view.promptConfirmation("Warning","Loading from a file will delete all current folios, do you wish to continue?");
+        boolean continueLoad = view.promptConfirmation("Warning","Loading from a file will delete all current folios, do you wish to continue? \n make sure to Save your current work.");
         if(continueLoad){
             File fileLoad = view.promptFileChooser(true);
             if(fileLoad != null){

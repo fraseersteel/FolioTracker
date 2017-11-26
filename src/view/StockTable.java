@@ -6,7 +6,6 @@ import model.IStock;
 import model.ViewUpdateType;
 
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -48,10 +47,12 @@ public class StockTable extends JPanel implements Observer, IStockTable {
         scrollPane.setViewportView(table);
 
         table.getModel().addTableModelListener(modelListener);
-        setTotalValueLabel(0.0);
+
+        double totalValueHoldings = 0.0;
         for (String ticker : portfolio.getStockTickers()) {
-            insertValues(ticker);
+            totalValueHoldings += insertValues(ticker);
         }
+        setTotalValueLabel(totalValueHoldings);
     }
 
     private void setupNorthMenu() {
@@ -124,14 +125,6 @@ public class StockTable extends JPanel implements Observer, IStockTable {
         formatCol(intitalPriceField);
         formatCol(TotalValueField);
 
-//        table.getColumnModel().getColumn(TickerField).setPreferredWidth(60);
-//        table.getColumnModel().getColumn(StockNameField).setPreferredWidth(60);
-//        table.getColumnModel().getColumn(NumSharesField).setPreferredWidth(60);
-//        table.getColumnModel().getColumn(SharePriceField).setPreferredWidth(110);
-//        table.getColumnModel().getColumn(intitalPriceField).setPreferredWidth(50);
-//        table.getColumnModel().getColumn(TotalValueField).setPreferredWidth(80);
-//        table.getColumnModel().getColumn(ProfitLoss).setPreferredWidth(50);
-
         table.setShowGrid(true);
         table.setDragEnabled(false);
         table.setShowVerticalLines(true);
@@ -146,13 +139,13 @@ public class StockTable extends JPanel implements Observer, IStockTable {
         model.setRowCount(0);
     }
 
-    public IStock insertValues(String ticker) {
+    public Double insertValues(String ticker) {
         IStock stock = portfolio.getStockByTicker(ticker);
         Object[] values = {ticker, stock.getStockName(), stock.getNumShares(), stock.getPricePerShare(), stock.getInitalPricePerShare(), stock.getValueOfHolding(), stock.getProfitOfHolding()};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
 
         model.insertRow(model.getRowCount(), values);
-        return stock;
+        return stock.getValueOfHolding();
     }
 
     @Override
@@ -170,7 +163,7 @@ public class StockTable extends JPanel implements Observer, IStockTable {
             clearTable();
             double totalValueHoldings = 0.0;
             for (String ticker : portfolio.getStockTickers()) {
-                totalValueHoldings += insertValues(ticker).getValueOfHolding();
+                totalValueHoldings += insertValues(ticker);
             }
             setTotalValueLabel(totalValueHoldings);
         }

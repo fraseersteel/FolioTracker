@@ -88,10 +88,13 @@ public class StockListener implements ActionListener, TableModelListener {
             {
                 try {
                     Boolean pass = get();
-                    if(pass == null){
+                    if(!pass && action.equals(SELL)){
                         folioFrame.displayError("Not enough shares \nyou have tried to sell more shares than you own!");
                         passed=false;
-                    }else if(pass){
+                    }else if(pass == null){
+                        folioFrame.displayError("Stock Not Found");
+                        passed=false;
+                    } else if(pass){
                         passed = true;
                     }else{
                         String t = stockTable.getTickerInput();

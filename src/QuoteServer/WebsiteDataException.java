@@ -1,4 +1,4 @@
-package model.QuoteServer;
+package QuoteServer;
 
 ///: WebsiteDataException.java
 

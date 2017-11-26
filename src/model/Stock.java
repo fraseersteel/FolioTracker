@@ -1,10 +1,6 @@
 package model;
 
-import model.QuoteServer.StrathQuoteServer;
-
 import java.io.Serializable;
-import java.util.Observable;
-import java.util.Observer;
 
 public class Stock implements IStock,Serializable {
 
@@ -65,5 +61,32 @@ public class Stock implements IStock,Serializable {
 
     public void sellShares(int numShares){
         this.numShares -= numShares;
+    }
+
+    @Override
+    public boolean equals(Object object){
+        if(object instanceof Stock){
+            Stock other = (Stock) object;
+            if(!ticketSymbol.equals(other.getTickerSymbol())){
+                return false;
+            }
+            if(!stockName.equals(other.getStockName())){
+                return false;
+            }
+            if(numShares != other.getNumShares()){
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode(){
+        int runningHash = 0;
+        runningHash += (ticketSymbol.hashCode()*ticketSymbol.hashCode());
+        runningHash += (stockName.hashCode()*stockName.hashCode());
+        runningHash += (numShares*numShares);
+        return runningHash;
     }
 }

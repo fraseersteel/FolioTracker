@@ -1,5 +1,7 @@
 package model;
 
+import QuoteServer.QuoteServer;
+import QuoteServer.StrathQuoteServer;
 import model.IPortfolioTracker;
 import view.StockTable;
 
@@ -10,31 +12,24 @@ import java.util.*;
 public class PortfolioTracker extends Observable implements IPortfolioTracker {
 
     private Map<String, Portfolio> portfolioList;
+    Timer timer;
     private Prices prices;
 
-    public PortfolioTracker() {
+    public PortfolioTracker(QuoteServer quoteServer) {
+        timer = new Timer();
         portfolioList = new HashMap<>();
-        prices = new Prices();
+        prices = new Prices(quoteServer);
     }
 
     public void startRefresher(){
-        Thread thread = new Thread(() -> {
-            while(true) {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
                 prices.refresh();
-                try {
-                    Thread.sleep(7000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
-        });
-        thread.start();
+        };
+        timer.scheduleAtFixedRate(task, 0, 5000);
     }
-//
-//    private void populate(){
-//        createAndAdd("1test");
-//        createAndAdd("2test");
-//    }
 
     private void createAndAdd(String name){
         portfolioList.put(name, new Portfolio(name));
@@ -100,9 +95,7 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
             outPut.close();
             System.out.println("Data is saved in: " + file.getName());
             isSuccessful = true;
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
+        } catch (IOException i) {}
         assert portfolioBefore.containsAll(portfolioList.values()): "portfoliosBefore:" + portfolioBefore + "\n portfoliosAfter:" + portfolioList.values();
         return isSuccessful;
     }
@@ -119,7 +112,7 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
                 while (true) {
                     Object inputObject = in.readObject();
                     if(inputObject instanceof Map){
-                        this.prices = new Prices((Map<String, Double>) inputObject);
+                        this.prices = new Prices(new StrathQuoteServer(), (Map<String, Double>) inputObject);
                     }else if(inputObject instanceof Portfolio){
                         portfolioList.put(((Portfolio) inputObject).getPortfolioName(), (Portfolio) inputObject);
                     }else{
@@ -132,18 +125,16 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
                 if(portfoliosBefore == portfolioList.values().size()){
                     return false;
                 }
-                for (Portfolio portfolio : portfolioList.values()) {
-                    for(String name : portfolio.getStockTickers()){
-                        Prices.addTicker(name);
-                    }
-                }
+//                for (Portfolio portfolio : portfolioList.values()) {
+//                    for(String name : portfolio.getStockTickers()){
+//                        Prices.addTicker(name);
+//                    }
+//                }
                 setChanged();
                 notifyObservers(ViewUpdateType.CREATION);
                 return true;
-            } catch (ClassNotFoundException e) {
-                return false;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             return false;
         }
     }
