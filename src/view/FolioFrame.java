@@ -1,19 +1,15 @@
 package view;
 
 import controller.PortfolioListener;
-import model.IPortfolio;
 import model.IPortfolioTracker;
-import model.Prices;
 import model.ViewUpdateType;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-//import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import javax.swing.event.ListDataListener;
-import javax.swing.plaf.ColorUIResource;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -260,14 +256,26 @@ public class FolioFrame extends JFrame implements Observer, IFolioFrame {
     @Override
     public File promptFileChooser(boolean load) {
         JFileChooser fc = new JFileChooser();
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileNameExtensionFilter ftFilter = new FileNameExtensionFilter("Folio Tracker Files (*.foliot)", "foliot");
+
+        fc.addChoosableFileFilter(ftFilter);
+        fc.setFileFilter(ftFilter);
         int result;
         if(load){
             result = fc.showOpenDialog(this);
         }else{
             result = fc.showSaveDialog(this);
         }
-
         if (result == JFileChooser.APPROVE_OPTION) {
+            if(!load){
+                try {
+                    File file = new File(fc.getSelectedFile().getCanonicalPath() + ".foliot");
+                    return file;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             return fc.getSelectedFile();
         }
         return null;

@@ -48,6 +48,7 @@ public class PortfolioListener implements ActionListener {
             case "Delete":
                 delete();
                 break;
+            default:assert false : action ;
         }
     }
 
@@ -84,7 +85,7 @@ public class PortfolioListener implements ActionListener {
                     protected void done() {
                         try {
                             if (!get()) {
-                                view.displayError("Error loading Folios\n Please Make sure the file exists and is not empty.");
+                                view.displayError("Error loading Folios\n The file chosen is not a valid folioTracker file\n Make sure your chosen file has the extension: .foliot");
                             }
                         } catch (InterruptedException e) {
                             e.printStackTrace();

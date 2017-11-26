@@ -181,6 +181,7 @@ public class StockTable extends JPanel implements Observer, IStockTable {
                 model.setValueAt(stock.getPricePerShare(), i, field);
                 model.setValueAt(stock.getProfitOfHolding(), i, ProfitLoss);
             } else {
+                assert field == NumSharesField: field;
                 model.setValueAt(stock.getNumShares(), i, field);
             }
             model.setValueAt(value, i, TotalValueField);
