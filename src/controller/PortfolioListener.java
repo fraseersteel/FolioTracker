@@ -48,7 +48,6 @@ public class PortfolioListener implements ActionListener {
             case "Delete":
                 delete();
                 break;
-            default:assert false : action ;
         }
     }
 

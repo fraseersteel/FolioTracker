@@ -53,11 +53,10 @@ public class PortfolioTest {
         assertNotEquals(compare, prices.getCurrentPriceList());
     }
 
-//    @Test
-//    public void testBuyStock(){
-//        assertTrue(portfolio.buyStock("GOLD",100));
-//    }
-
+    @Test
+    public void testBuyStock(){
+        assertTrue(portfolio.buyStock("BT",100));
+    }
 
     @Test
     public void testBuyNull() {

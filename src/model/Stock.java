@@ -84,9 +84,9 @@ public class Stock implements IStock,Serializable {
     @Override
     public int hashCode(){
         int runningHash = 0;
-        runningHash += (ticketSymbol.hashCode()*ticketSymbol.hashCode());
-        runningHash += (stockName.hashCode()*stockName.hashCode());
-        runningHash += (numShares*numShares);
+        runningHash += (ticketSymbol.hashCode());
+        runningHash += (stockName.hashCode());
+        runningHash += (numShares);
         return runningHash;
     }
 }

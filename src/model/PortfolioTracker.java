@@ -37,7 +37,9 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
 
     @Override
     public Set<String> getPortfolioNames() {
-        return portfolioList.keySet();
+        Set<String> foliosCopy = new HashSet<>();
+        foliosCopy.addAll(portfolioList.keySet());
+        return foliosCopy;
     }
 
     @Override
@@ -125,11 +127,6 @@ public class PortfolioTracker extends Observable implements IPortfolioTracker {
                 if(portfoliosBefore == portfolioList.values().size()){
                     return false;
                 }
-//                for (Portfolio portfolio : portfolioList.values()) {
-//                    for(String name : portfolio.getStockTickers()){
-//                        Prices.addTicker(name);
-//                    }
-//                }
                 setChanged();
                 notifyObservers(ViewUpdateType.CREATION);
                 return true;
