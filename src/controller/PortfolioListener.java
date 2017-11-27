@@ -53,7 +53,7 @@ public class PortfolioListener implements ActionListener {
 
     private void save() {
         if(model.getPortfolioNames().size() == 0){
-            view.displayError("No Folios to save.");
+            view.displayError("There are no folios to save. \n Please make sure that you have at least one folio open before trying to save.");
         }else{
             File fileSave = view.promptFileChooser(false);
             if(fileSave != null){
