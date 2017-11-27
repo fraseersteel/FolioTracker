@@ -52,11 +52,15 @@ public class PortfolioListener implements ActionListener {
     }
 
     private void save() {
-        File fileSave = view.promptFileChooser(false);
-        if(fileSave != null){
-            Boolean b = model.savePortfolios(fileSave);
-            if(!b){
-                view.displayError("Error Saving Folios\n");
+        if(model.getPortfolioNames().size() == 0){
+            view.displayError("No Folios to save.");
+        }else{
+            File fileSave = view.promptFileChooser(false);
+            if(fileSave != null){
+                Boolean b = model.savePortfolios(fileSave);
+                if(!b){
+                    view.displayError("Error Saving Folios\n");
+                }
             }
         }
     }
