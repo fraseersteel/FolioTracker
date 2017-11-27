@@ -1,0 +1,2 @@
+Run the driver within the main class. No other requirements.
+Tests in seperate folder outside src document.
